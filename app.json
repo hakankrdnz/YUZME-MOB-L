@@ -1,0 +1,21 @@
+{
+  "expo": {
+    "name": "Yüzme Antrenmanı",
+    "slug": "yuzme-mobil",
+    "version": "1.0.0",
+    "orientation": "portrait",
+    "scheme": "yuzme-mobil",
+    "userInterfaceStyle": "dark",
+    "newArchEnabled": true,
+    "ios": {
+      "supportsTablet": true,
+      "bundleIdentifier": "com.yuzme.antrenman"
+    },
+    "android": {
+      "package": "com.yuzme.antrenman"
+    },
+    "plugins": [
+      "expo-router"
+    ]
+  }
+}
