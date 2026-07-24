@@ -36,7 +36,8 @@ export const REAL_SWIM_WORKOUTS: Record<string, DetailedWorkoutPlan> = {
     estimatedTimeMin: 50,
     description: 'Açık su yüzücüleri (Open Water Swimmers) için yüksek tempolu interval antrenmanı.',
     sets: [
-      { id: 'w1', category: 'Warmup', reps: 1, distance: 200, stroke: '50m free + 50m drill', intensityPercent: 40, restTimeFormatted: '0:30' },
+      { id: 'w1', category: 'Warmup', reps: 1, distance: 200, stroke: 'Freestyle easy swim', intensityPercent: 40, restTimeFormatted: '0:30' },
+
       { id: 'p1', category: 'Preparation', reps: 4, distance: 50, stroke: 'Fist swimming drill', intensityPercent: 60, restTimeFormatted: '0:30' },
       { id: 'p2', category: 'Preparation', reps: 4, distance: 50, stroke: 'Free progressive 1st 60% to 4th 90%', intensityPercent: 80, restTimeFormatted: '0:30' },
       { id: 'm1', category: 'Main', reps: 10, distance: 100, stroke: 'Freestyle CSS Pace (Tempo Hold)', intensityPercent: 85, restTimeFormatted: '0:20' },
