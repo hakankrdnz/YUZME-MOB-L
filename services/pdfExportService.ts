@@ -229,23 +229,75 @@ export const generateWorkoutHTML = (workout: Workout): string => {
   `;
 };
 
+export const generateWorkoutSummaryText = (workout: Workout): string => {
+  const matchedPlan = REAL_SWIM_WORKOUTS[workout.title] || REAL_SWIM_WORKOUTS['Long Distance'] || REAL_SWIM_WORKOUTS['Interval Training'];
+  const setsList: DetailedWorkoutSetItem[] = matchedPlan ? matchedPlan.sets : workout.sets.map((s, idx) => ({
+    id: `set-${idx}`,
+    category: s.category === 'Isınma' ? 'Warmup' : s.category === 'Soğuma' ? 'Cool Down' : 'Main',
+    reps: s.reps,
+    distance: s.distance,
+    stroke: s.stroke,
+    intensityPercent: 70,
+    restTimeFormatted: s.restSeconds > 0 ? `0:${s.restSeconds < 10 ? '0' : ''}${s.restSeconds}` : '0:30'
+  }));
+
+  const setsText = setsList.map((set, idx) => 
+    `• [${set.category}] ${set.reps > 1 ? `${set.reps}x${set.distance}` : `${set.distance}`}m ${set.stroke} (Mola: ${set.restTimeFormatted})`
+  ).join('\n');
+
+  return `🏊‍♂️ OPEN WATER SWIMMER - YÜZME ANTRENMAN KARTI
+------------------------------------------
+📌 Antrenman: ${workout.title}
+🏊 Havuz: ${workout.poolLength}m Olimpik | Seviye: ${workout.level}
+📏 Toplam Mesafe: ${workout.totalDistance} Metre (${(workout.totalDistance / 1000).toFixed(1)} km)
+⏱️ Tahmini Süre: ${workout.estimatedTimeMin} Dk
+
+ANTRENMAN SETLERİ:
+${setsText}
+------------------------------------------
+Open Water Swimmer Track & Workout App`;
+};
+
 export const exportWorkoutToPDF = async (workout: Workout): Promise<void> => {
   try {
     const htmlContent = generateWorkoutHTML(workout);
-    const { uri } = await Print.printToFileAsync({ html: htmlContent });
 
-    if (await Sharing.isAvailableAsync()) {
-      await Sharing.shareAsync(uri, {
-        UTI: '.pdf',
-        mimeType: 'application/pdf',
-        dialogTitle: `${workout.title} - Havuz Antrenman PDF Kartı`
-      });
-    } else {
-      Alert.alert('PDF Oluşturuldu', `PDF dosyası oluşturuldu:\n${uri}`);
+    // Tier 1: Try Print.printAsync (Opens native AirPrint / Android Print / Web Print dialog)
+    try {
+      await Print.printAsync({ html: htmlContent });
+      return;
+    } catch (printErr) {
+      console.log('printAsync fallback:', printErr);
     }
-  } catch (error) {
-    Alert.alert('Hata', 'PDF antrenman kartı oluşturulurken bir sorun oluştu.');
+
+    // Tier 2: Try Print.printToFileAsync + Share
+    try {
+      const { uri } = await Print.printToFileAsync({ html: htmlContent });
+      if (await Sharing.isAvailableAsync()) {
+        await Sharing.shareAsync(uri, {
+          UTI: '.pdf',
+          mimeType: 'application/pdf',
+          dialogTitle: `${workout.title} - Havuz Antrenman PDF Kartı`
+        });
+        return;
+      }
+    } catch (fileErr) {
+      console.log('printToFileAsync fallback:', fileErr);
+    }
+
+    // Tier 3: Ultimate Native Share text fallback
+    const summaryText = generateWorkoutSummaryText(workout);
+    const { Share } = require('react-native');
+    await Share.share({
+      title: `${workout.title} - Antrenman Kartı`,
+      message: summaryText,
+    });
+
+  } catch (error: any) {
+    console.error('PDF Export Error:', error);
+    Alert.alert('Antrenman Kartı', generateWorkoutSummaryText(workout));
   }
 };
+
 
 
