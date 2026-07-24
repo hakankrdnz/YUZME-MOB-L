@@ -27,15 +27,41 @@ export default function HomeScreen() {
   const [activePoolType, setActivePoolType] = useState<'25m' | '50m' | 'OpenWater'>('25m');
   const [exportWorkout, setExportWorkout] = useState<Workout | null>(null);
 
-  const weeklyProgram: WeeklyWorkoutItem[] = [
-    { id: '1', day: 'PZT', title: 'Interval Training', distanceKm: 2.7, color: Colors.accent, stroke: 'Serbest + Drill', isLightning: true },
-    { id: '2', day: 'SAL', title: 'Long Distance', distanceKm: 3.0, color: Colors.secondary, stroke: 'Serbest Negatif Split', isLightning: true },
-    { id: '3', day: 'ÇAR', title: 'Endurance + Hypoxic (Hybrid)', distanceKm: 4.5, color: Colors.purple, stroke: 'Hipoksik Nefes' },
-    { id: '4', day: 'PER', title: 'Long Speed', distanceKm: 2.9, color: Colors.green, stroke: 'Palet + Tahta' },
-    { id: '5', day: 'CUM', title: 'Dinlenme Günü', distanceKm: 0, color: Colors.textMuted, stroke: '-', isRest: true },
-    { id: '6', day: 'CMT', title: 'Lung Capacity & Speed', distanceKm: 3.2, color: Colors.red, stroke: 'Depar + Sprint' },
-    { id: '7', day: 'PAZ', title: 'Dinlenme Günü', distanceKm: 0, color: Colors.textMuted, stroke: '-', isRest: true },
-  ];
+  // Dynamic ISO week helper
+  const getWeekNumber = (d: Date) => {
+    const date = new Date(Date.UTC(d.getFullYear(), d.getMonth(), d.getDate()));
+    date.setUTCDate(date.getUTCDate() + 4 - (date.getUTCDay() || 7));
+    const yearStart = new Date(Date.UTC(date.getUTCFullYear(), 0, 1));
+    return Math.ceil((((date.getTime() - yearStart.getTime()) / 86400000) + 1) / 7);
+  };
+
+  const currentWeekNum = getWeekNumber(new Date());
+
+  // Rotates through our 77+ preset workouts pool automatically each week
+  const getWeeklyProgram = (): WeeklyWorkoutItem[] => {
+    const pool = INITIAL_WORKOUTS;
+    const offset = (currentWeekNum * 5) % pool.length;
+
+    const w1 = pool[offset % pool.length];
+    const w2 = pool[(offset + 1) % pool.length];
+    const w3 = pool[(offset + 2) % pool.length];
+    const w4 = pool[(offset + 3) % pool.length];
+    const w5 = pool[(offset + 4) % pool.length];
+
+    return [
+      { id: '1', day: 'PZT', title: w1.title, distanceKm: parseFloat((w1.totalDistance / 1000).toFixed(1)), color: Colors.accent, stroke: w1.sets[0]?.stroke || 'Serbest + Drill', isLightning: true },
+      { id: '2', day: 'SAL', title: w2.title, distanceKm: parseFloat((w2.totalDistance / 1000).toFixed(1)), color: Colors.secondary, stroke: w2.sets[0]?.stroke || 'Serbest Negatif Split', isLightning: true },
+      { id: '3', day: 'ÇAR', title: w3.title, distanceKm: parseFloat((w3.totalDistance / 1000).toFixed(1)), color: Colors.purple, stroke: w3.sets[0]?.stroke || 'Hipoksik Nefes' },
+      { id: '4', day: 'PER', title: w4.title, distanceKm: parseFloat((w4.totalDistance / 1000).toFixed(1)), color: Colors.green, stroke: w4.sets[0]?.stroke || 'Palet + Tahta' },
+      { id: '5', day: 'CUM', title: 'Dinlenme Günü', distanceKm: 0, color: Colors.textMuted, stroke: '-', isRest: true },
+      { id: '6', day: 'CMT', title: w5.title, distanceKm: parseFloat((w5.totalDistance / 1000).toFixed(1)), color: Colors.red, stroke: w5.sets[0]?.stroke || 'Depar + Sprint' },
+      { id: '7', day: 'PAZ', title: 'Dinlenme Günü', distanceKm: 0, color: Colors.textMuted, stroke: '-', isRest: true },
+    ];
+  };
+
+  const weeklyProgram = getWeeklyProgram();
+  const totalWeeklyKm = weeklyProgram.reduce((sum, item) => sum + item.distanceKm, 0).toFixed(1);
+
 
   const handleSelectWorkout = (item: WeeklyWorkoutItem) => {
     if (item.isRest) return;
@@ -169,7 +195,8 @@ export default function HomeScreen() {
             <Text style={styles.programCardHeader}>
               HAFTALIK PROGRAM AKIŞI
             </Text>
-            <Text style={styles.programKmBadge}>5 Antrenman • 16.3 km</Text>
+            <Text style={styles.programKmBadge}>{currentWeekNum}. HAFTA • {totalWeeklyKm} km</Text>
+
           </View>
 
           <View style={styles.divider} />
