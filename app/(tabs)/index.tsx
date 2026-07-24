@@ -203,17 +203,19 @@ export default function HomeScreen() {
 
           <View style={styles.programList}>
             {weeklyProgram.map((item) => (
-              <TouchableOpacity
+              <View
                 key={item.id}
                 style={[
                   styles.workoutRow,
                   item.isRest && styles.restRow
                 ]}
-                onPress={() => handleSelectWorkout(item)}
-                disabled={item.isRest}
-                activeOpacity={0.7}
               >
-                <View style={styles.rowLeft}>
+                <TouchableOpacity 
+                  style={styles.rowLeft}
+                  onPress={() => handleSelectWorkout(item)}
+                  disabled={item.isRest}
+                  activeOpacity={0.7}
+                >
                   <View style={[styles.colorDot, { backgroundColor: item.color }]} />
 
                   <Text style={[styles.dayText, item.isRest && styles.restTextMuted]}>
@@ -232,17 +234,17 @@ export default function HomeScreen() {
                       </Text>
                     </View>
                   )}
-                </View>
+                </TouchableOpacity>
 
                 {/* Right Action Icons: Start & Export */}
                 {!item.isRest && (
                   <View style={styles.actionRow}>
                     <TouchableOpacity 
                       style={styles.iconBtn} 
-                      onPress={(e) => handleOpenExport(item, e)}
+                      onPress={() => handleOpenExport(item)}
                       activeOpacity={0.7}
                     >
-                      <MaterialCommunityIcons name="file-pdf-box" size={20} color={Colors.secondary} />
+                      <MaterialCommunityIcons name="file-pdf-box" size={22} color={Colors.secondary} />
                     </TouchableOpacity>
 
                     <TouchableOpacity 
@@ -254,8 +256,9 @@ export default function HomeScreen() {
                     </TouchableOpacity>
                   </View>
                 )}
-              </TouchableOpacity>
+              </View>
             ))}
+
           </View>
         </View>
       </ScrollView>

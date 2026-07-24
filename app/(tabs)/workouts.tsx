@@ -96,21 +96,19 @@ export default function TrainingScreen() {
         {/* Workouts Grid / Cards List */}
         <View style={styles.workoutListGroup}>
           {filteredWorkouts.map((workout) => (
-            <TouchableOpacity
+            <View
               key={workout.id}
               style={styles.workoutCard}
-              onPress={() => handleSelectWorkout(workout)}
-              activeOpacity={0.85}
             >
               <View style={styles.cardHeaderRow}>
                 <View style={styles.badgesRow}>
                   <View style={[
                     styles.levelBadge,
-                    { backgroundColor: workout.level.includes('Advanced') || workout.level === 'İleri' ? Colors.accent + '20' : Colors.secondary + '20' }
+                    { backgroundColor: (workout.level as string).includes('Advanced') || (workout.level as string) === 'İleri' ? Colors.accent + '20' : Colors.secondary + '20' }
                   ]}>
                     <Text style={[
                       styles.levelBadgeText,
-                      { color: workout.level.includes('Advanced') || workout.level === 'İleri' ? Colors.accent : Colors.secondary }
+                      { color: (workout.level as string).includes('Advanced') || (workout.level as string) === 'İleri' ? Colors.accent : Colors.secondary }
                     ]}>
                       {workout.level}
                     </Text>
@@ -123,24 +121,26 @@ export default function TrainingScreen() {
 
                 <TouchableOpacity 
                   style={styles.exportBtn}
-                  onPress={(e) => handleOpenExport(workout, e)}
+                  onPress={() => handleOpenExport(workout)}
                   activeOpacity={0.8}
                 >
-                  <MaterialCommunityIcons name="file-pdf-box" size={20} color={Colors.secondary} />
-                  <Ionicons name="watch-outline" size={18} color={Colors.primary} />
+                  <MaterialCommunityIcons name="file-pdf-box" size={22} color={Colors.secondary} />
+                  <Ionicons name="watch-outline" size={20} color={Colors.primary} />
                 </TouchableOpacity>
               </View>
 
-              <Text style={styles.cardTitle}>{workout.title}</Text>
-              <Text style={styles.cardDesc} numberOfLines={2}>{workout.description}</Text>
+              <TouchableOpacity onPress={() => handleSelectWorkout(workout)} activeOpacity={0.85}>
+                <Text style={styles.cardTitle}>{workout.title}</Text>
+                <Text style={styles.cardDesc} numberOfLines={2}>{workout.description}</Text>
 
-              {/* Set Category Visual Progress Bar */}
-              <View style={styles.cardSetTrack}>
-                <View style={[styles.setSegment, { flex: 2, backgroundColor: Colors.secondary }]} />
-                <View style={[styles.setSegment, { flex: 3, backgroundColor: Colors.primary }]} />
-                <View style={[styles.setSegment, { flex: 5, backgroundColor: Colors.accent }]} />
-                <View style={[styles.setSegment, { flex: 2, backgroundColor: Colors.green }]} />
-              </View>
+                {/* Set Category Visual Progress Bar */}
+                <View style={styles.cardSetTrack}>
+                  <View style={[styles.setSegment, { flex: 2, backgroundColor: Colors.secondary }]} />
+                  <View style={[styles.setSegment, { flex: 3, backgroundColor: Colors.primary }]} />
+                  <View style={[styles.setSegment, { flex: 5, backgroundColor: Colors.accent }]} />
+                  <View style={[styles.setSegment, { flex: 2, backgroundColor: Colors.green }]} />
+                </View>
+              </TouchableOpacity>
 
               <View style={styles.cardFooter}>
                 <View style={styles.cardStat}>
@@ -167,8 +167,9 @@ export default function TrainingScreen() {
                   <Text style={styles.cardStartBtnText}>Başlat</Text>
                 </TouchableOpacity>
               </View>
-            </TouchableOpacity>
+            </View>
           ))}
+
         </View>
       </ScrollView>
 
