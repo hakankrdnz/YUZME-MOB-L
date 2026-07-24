@@ -2,17 +2,67 @@ import { Alert } from 'react-native';
 import * as Print from 'expo-print';
 import * as Sharing from 'expo-sharing';
 import { Workout } from '../types/swimming';
+import { REAL_SWIM_WORKOUTS, DetailedWorkoutSetItem } from './workoutService';
 
 export const generateWorkoutHTML = (workout: Workout): string => {
-  const setsRows = workout.sets.map((set, idx) => `
-    <tr style="background-color: ${idx % 2 === 0 ? '#1E293B' : '#0F172A'};">
-      <td style="padding: 10px; border-bottom: 1px solid #334155; font-weight: bold; color: #38BDF8;">Set ${idx + 1}</td>
-      <td style="padding: 10px; border-bottom: 1px solid #334155; color: #F8FAFC;">${set.category}</td>
-      <td style="padding: 10px; border-bottom: 1px solid #334155; color: #FACC15; font-weight: bold;">${set.reps} × ${set.distance}m</td>
-      <td style="padding: 10px; border-bottom: 1px solid #334155; color: #F8FAFC;">${set.stroke}</td>
-      <td style="padding: 10px; border-bottom: 1px solid #334155; color: #94A3B8;">${set.restSeconds > 0 ? `${set.restSeconds} sn` : '-'}</td>
-    </tr>
-  `).join('');
+  const matchedPlan = REAL_SWIM_WORKOUTS[workout.title] || REAL_SWIM_WORKOUTS['Long Distance'] || REAL_SWIM_WORKOUTS['Interval Training'];
+  const setsList: DetailedWorkoutSetItem[] = matchedPlan ? matchedPlan.sets : workout.sets.map((s, idx) => ({
+    id: `set-${idx}`,
+    category: s.category === 'Isınma' ? 'Warmup' : s.category === 'Soğuma' ? 'Cool Down' : 'Main',
+    reps: s.reps,
+    distance: s.distance,
+    stroke: s.stroke,
+    intensityPercent: 70,
+    restTimeFormatted: s.restSeconds > 0 ? `0:${s.restSeconds < 10 ? '0' : ''}${s.restSeconds}` : '0:30'
+  }));
+
+  const categories: ('Warmup' | 'Preparation' | 'Main' | 'Cool Down')[] = [
+    'Warmup',
+    'Preparation',
+    'Main',
+    'Cool Down'
+  ];
+
+  const getSquareColor = (category: string, stroke: string, intensity: number) => {
+    if (intensity >= 90 || stroke.includes('90%') || stroke.includes('100%')) return '#F97316'; // Warm Orange
+    if (category === 'Preparation' || intensity >= 60) return '#3B82F6'; // Electric Blue
+    return '#F8FAFC'; // Clean White
+  };
+
+  const sectionsHtml = categories.map(cat => {
+    const secSets = setsList.filter(s => s.category === cat);
+    if (secSets.length === 0) return '';
+
+    const rowsHtml = secSets.map(set => {
+      const squareColor = getSquareColor(set.category, set.stroke, set.intensityPercent || 70);
+      const repsFormatted = set.reps > 1 ? `${set.reps}×${set.distance}` : `${set.distance}`;
+
+      return `
+        <div class="set-row">
+          <div class="set-left">
+            <span class="color-square" style="background-color: ${squareColor};"></span>
+            <span class="reps-val">${repsFormatted}</span>
+            <span class="stroke-val">${set.stroke}</span>
+          </div>
+          <div class="set-right">
+            <span class="timer-icon">⏱</span>
+            <span class="rest-val">${set.restTimeFormatted}</span>
+          </div>
+        </div>
+      `;
+    }).join('');
+
+    return `
+      <div class="section-card">
+        <div class="section-title">${cat}</div>
+        <div class="set-list">
+          ${rowsHtml}
+        </div>
+      </div>
+    `;
+  }).join('');
+
+  const shortTitle = workout.title.split(' ').map(w => w[0]).join('').substring(0, 2).toUpperCase() || 'LD';
 
   return `
     <!DOCTYPE html>
@@ -23,124 +73,156 @@ export const generateWorkoutHTML = (workout: Workout): string => {
         <style>
           body {
             font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
-            background-color: #070C16;
+            background-color: #050B14;
             color: #F8FAFC;
-            padding: 30px;
+            padding: 24px;
             margin: 0;
+            -webkit-print-color-adjust: exact;
           }
-          .card-header {
-            border-bottom: 2px solid #FACC15;
-            padding-bottom: 15px;
+          .top-nav {
+            display: flex;
+            align-items: center;
+            justify.content: space-between;
             margin-bottom: 20px;
           }
-          .title {
-            color: #FACC15;
-            font-size: 26px;
-            font-weight: 900;
-            margin: 0 0 6px 0;
+          .back-arrow {
+            font-size: 22px;
+            color: #F8FAFC;
+            font-weight: 300;
           }
-          .subtitle {
-            color: #38BDF8;
-            font-size: 14px;
-            font-weight: bold;
-            letter-spacing: 1px;
-            text-transform: uppercase;
+          .badge-pill {
+            display: inline-flex;
+            align-items: center;
+            background-color: #0E1D36;
+            border: 1.5px solid #1E3A66;
+            padding: 8px 18px;
+            border-radius: 20px;
+            gap: 8px;
           }
-          .meta-grid {
-            display: flex;
-            gap: 20px;
-            margin-bottom: 25px;
-            background: #0F172A;
-            padding: 15px;
+          .badge-icon {
+            width: 20px;
+            height: 20px;
             border-radius: 10px;
-            border: 1px solid #1E293B;
+            border: 1px solid #38BDF8;
+            color: #38BDF8;
+            font-size: 10px;
+            font-weight: 900;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
           }
-          .meta-item {
-            flex: 1;
+          .badge-text {
+            color: #F8FAFC;
+            font-size: 15px;
+            font-weight: 800;
           }
-          .meta-label {
-            color: #64748B;
-            font-size: 11px;
-            font-weight: bold;
-            text-transform: uppercase;
+          .glossary-row {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            color: #94A3B8;
+            font-size: 13px;
+            font-weight: 600;
+            margin-bottom: 20px;
+            padding-left: 4px;
           }
-          .meta-value {
+          .section-card {
+            background-color: #0A162B;
+            border: 1px solid #192C4D;
+            border-radius: 18px;
+            padding: 18px 20px;
+            margin-bottom: 18px;
+          }
+          .section-title {
+            color: #F8FAFC;
+            font-size: 19px;
+            font-weight: 800;
+            margin-bottom: 14px;
+          }
+          .set-list {
+            display: flex;
+            flex-direction: column;
+            gap: 14px;
+          }
+          .set-row {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+          }
+          .set-left {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+          }
+          .color-square {
+            width: 13px;
+            height: 13px;
+            border-radius: 3px;
+            display: inline-block;
+          }
+          .reps-val {
             color: #F8FAFC;
             font-size: 16px;
-            font-weight: bold;
-            margin-top: 4px;
+            font-weight: 900;
+            min-width: 50px;
           }
-          table {
-            width: 100%;
-            border-collapse: collapse;
-            margin-top: 15px;
-            border-radius: 8px;
-            overflow: hidden;
+          .stroke-val {
+            color: #F8FAFC;
+            font-size: 14px;
+            font-weight: 600;
           }
-          th {
-            background-color: #0F172A;
+          .set-right {
+            display: flex;
+            align-items: center;
+            gap: 6px;
             color: #94A3B8;
-            text-align: left;
-            padding: 12px 10px;
-            font-size: 12px;
-            text-transform: uppercase;
-            border-bottom: 2px solid #1E293B;
+            font-size: 13px;
+            font-weight: 600;
           }
-          .footer {
-            margin-top: 40px;
+          .timer-icon {
+            font-size: 14px;
+            opacity: 0.8;
+          }
+          .footer-logo {
             text-align: center;
-            color: #64748B;
-            font-size: 12px;
-            border-top: 1px solid #1E293B;
-            padding-top: 15px;
+            margin-top: 30px;
+            margin-bottom: 20px;
+            color: #38BDF8;
+            font-size: 24px;
+          }
+          .actions-btn {
+            background-color: #F8FAFC;
+            color: #050B14;
+            text-align: center;
+            padding: 16px;
+            border-radius: 30px;
+            font-size: 16px;
+            font-weight: 900;
+            letterSpacing: 0.5px;
+            margin-top: 10px;
           }
         </style>
       </head>
       <body>
-        <div class="card-header">
-          <div class="subtitle">OPEN WATER SWIMMER • HAVUZ KART (50M OLİMPİK)</div>
-          <h1 class="title">${workout.title}</h1>
-          <p style="color: #94A3B8; margin: 4px 0 0 0; font-size: 13px;">${workout.description}</p>
+        <div class="top-nav">
+          <span class="back-arrow">&#10094;</span>
+          <div class="badge-pill">
+            <span class="badge-icon">${shortTitle}</span>
+            <span class="badge-text">${workout.title}</span>
+          </div>
+          <div style="width: 24px;"></div>
         </div>
 
-
-        <div class="meta-grid">
-          <div class="meta-item">
-            <div class="meta-label">TOPLAM MESAFE</div>
-            <div class="meta-value">${workout.totalDistance}m (${(workout.totalDistance / 1000).toFixed(1)} km)</div>
-          </div>
-          <div class="meta-item">
-            <div class="meta-label">TAHMİNİ SÜRE</div>
-            <div class="meta-value">${workout.estimatedTimeMin} dakika</div>
-          </div>
-          <div class="meta-item">
-            <div class="meta-label">HAVUZ KULVARI</div>
-            <div class="meta-value">${workout.poolLength}m Havuz</div>
-          </div>
-          <div class="meta-item">
-            <div class="meta-label">SEVİYE</div>
-            <div class="meta-value">${workout.level}</div>
-          </div>
+        <div class="glossary-row">
+          <span>&#9432;</span> Training Glossary
         </div>
 
-        <h3 style="color: #F8FAFC; margin-bottom: 5px;">Antrenman Set Programı</h3>
-        <table>
-          <thead>
-            <tr>
-              <th>Set #</th>
-              <th>Kategori</th>
-              <th>Tekrar x Mesafe</th>
-              <th>Yüzme Stili</th>
-              <th>Mola</th>
-            </tr>
-          </thead>
-          <tbody>
-            ${setsRows}
-          </tbody>
-        </table>
+        ${sectionsHtml}
 
-        <div class="footer">
-          Open Water Dragos Swim Tracker & Workout App • ${new Date().toLocaleDateString('tr-TR')}
+        <div class="footer-logo">🏊‍♂️</div>
+
+        <div class="actions-btn">
+          Session Actions
         </div>
       </body>
     </html>
@@ -165,4 +247,5 @@ export const exportWorkoutToPDF = async (workout: Workout): Promise<void> => {
     Alert.alert('Hata', 'PDF antrenman kartı oluşturulurken bir sorun oluştu.');
   }
 };
+
 
