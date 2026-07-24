@@ -5,17 +5,31 @@ import { Ionicons } from '@expo/vector-icons';
 
 interface RestTimerProps {
   initialSeconds: number;
-  onComplete: () => void;
-  onSkip: () => void;
+  onComplete?: () => void;
+  onFinish?: () => void;
+  onSkip?: () => void;
+  onClose?: () => void;
 }
 
 export const RestTimer: React.FC<RestTimerProps> = ({
   initialSeconds,
   onComplete,
-  onSkip
+  onFinish,
+  onSkip,
+  onClose
 }) => {
   const [timeLeft, setTimeLeft] = useState(initialSeconds);
   const [isRunning, setIsRunning] = useState(true);
+
+  const handleFinish = () => {
+    if (onFinish) onFinish();
+    if (onComplete) onComplete();
+  };
+
+  const handleClose = () => {
+    if (onClose) onClose();
+    if (onSkip) onSkip();
+  };
 
   useEffect(() => {
     let interval: any = null;
@@ -24,12 +38,13 @@ export const RestTimer: React.FC<RestTimerProps> = ({
         setTimeLeft((prev) => prev - 1);
       }, 1000);
     } else if (timeLeft === 0) {
-      onComplete();
+      handleFinish();
     }
     return () => {
       if (interval) clearInterval(interval);
     };
   }, [isRunning, timeLeft]);
+
 
   const toggleTimer = () => setIsRunning(!isRunning);
 
@@ -71,10 +86,11 @@ export const RestTimer: React.FC<RestTimerProps> = ({
           )}
         </TouchableOpacity>
 
-        <TouchableOpacity style={[styles.controlBtn, styles.skipBtn]} onPress={onSkip}>
+        <TouchableOpacity style={[styles.controlBtn, styles.skipBtn]} onPress={handleClose}>
           <Ionicons name="play-skip-forward" size={18} color="#FFFFFF" />
           <Text style={styles.btnText}>Atla (Sonraki Set)</Text>
         </TouchableOpacity>
+
       </View>
     </View>
   );

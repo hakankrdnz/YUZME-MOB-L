@@ -7,6 +7,7 @@ import { Ionicons, MaterialCommunityIcons } from '@expo/vector-icons';
 interface HeaderBarProps {
   userName?: string;
   subTitle?: string;
+  streakCount?: number;
   onGetPro?: () => void;
   onSettings?: () => void;
 }
@@ -14,37 +15,47 @@ interface HeaderBarProps {
 export const HeaderBar: React.FC<HeaderBarProps> = ({
   userName = 'Hakan Karadeniz',
   subTitle = 'OPEN WATER • DRAGOS',
+  streakCount = 5,
   onGetPro,
   onSettings
 }) => {
   const insets = useSafeAreaInsets();
 
   return (
-    <View style={[styles.container, { paddingTop: Math.max(insets.top, 16) + 8 }]}>
+    <View style={[styles.container, { paddingTop: Math.max(insets.top, 16) + 6 }]}>
       <View style={styles.userSection}>
-        {/* Swimmer Avatar Icon with Yellow Ring */}
+        {/* Swimmer Avatar Icon with Glowing Gold Ring */}
         <View style={styles.avatarRing}>
           <View style={styles.avatarInner}>
-            <MaterialCommunityIcons name="swim" size={20} color={Colors.primary} />
+            <MaterialCommunityIcons name="swim" size={22} color={Colors.primary} />
           </View>
         </View>
 
         <View style={styles.userTextInfo}>
-          <Text style={styles.subTitleText}>
-            <Text style={{ color: Colors.primary }}>OPEN WATER</Text>
-            <Text style={{ color: Colors.secondary }}> • DRAGOS</Text>
-          </Text>
+          <View style={styles.subTitleRow}>
+            <Text style={styles.subTitleText}>
+              <Text style={{ color: Colors.primary }}>OPEN WATER</Text>
+              <Text style={{ color: Colors.secondary }}> • DRAGOS</Text>
+            </Text>
+          </View>
           <Text style={styles.userNameText}>{userName}</Text>
         </View>
       </View>
 
       <View style={styles.actionsSection}>
-        <TouchableOpacity style={styles.getProBtn} onPress={onGetPro} activeOpacity={0.8}>
-          <Text style={styles.getProText}>Get Pro</Text>
+        {/* Streak Pill */}
+        <View style={styles.streakPill}>
+          <Text style={styles.streakFire}>🔥</Text>
+          <Text style={styles.streakText}>{streakCount}d</Text>
+        </View>
+
+        <TouchableOpacity style={styles.getProBtn} onPress={onGetPro} activeOpacity={0.85}>
+          <Ionicons name="sparkles" size={13} color="#000" style={{ marginRight: 4 }} />
+          <Text style={styles.getProText}>PRO</Text>
         </TouchableOpacity>
 
         <TouchableOpacity style={styles.settingsBtn} onPress={onSettings} activeOpacity={0.8}>
-          <Ionicons name="settings-outline" size={20} color={Colors.textSecondary} />
+          <Ionicons name="options-outline" size={19} color={Colors.textPrimary} />
         </TouchableOpacity>
       </View>
     </View>
@@ -74,6 +85,7 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'center',
     backgroundColor: Colors.surface,
+    ...Layout.shadows.glowYellow,
   },
   avatarInner: {
     width: 36,
@@ -86,10 +98,14 @@ const styles = StyleSheet.create({
   userTextInfo: {
     justifyContent: 'center',
   },
+  subTitleRow: {
+    flexDirection: 'row',
+    alignItems: 'center',
+  },
   subTitleText: {
-    fontSize: 11,
-    fontWeight: '800',
-    letterSpacing: 0.8,
+    fontSize: 10,
+    fontWeight: '900',
+    letterSpacing: 0.9,
     marginBottom: 2,
   },
   userNameText: {
@@ -100,18 +116,41 @@ const styles = StyleSheet.create({
   actionsSection: {
     flexDirection: 'row',
     alignItems: 'center',
-    gap: 10,
+    gap: 8,
+  },
+  streakPill: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    backgroundColor: Colors.surfaceLight,
+    borderColor: Colors.borderGlass,
+    borderWidth: 1,
+    paddingHorizontal: 8,
+    paddingVertical: 5,
+    borderRadius: Layout.borderRadius.full,
+    gap: 2,
+  },
+  streakFire: {
+    fontSize: 12,
+  },
+  streakText: {
+    color: Colors.primary,
+    fontSize: 12,
+    fontWeight: '800',
   },
   getProBtn: {
+    flexDirection: 'row',
+    alignItems: 'center',
     backgroundColor: Colors.primary,
-    paddingHorizontal: 14,
-    paddingVertical: 7,
+    paddingHorizontal: 12,
+    paddingVertical: 6,
     borderRadius: Layout.borderRadius.full,
+    ...Layout.shadows.glowYellow,
   },
   getProText: {
-    color: Colors.surface,
+    color: '#000000',
     fontSize: 12,
     fontWeight: '900',
+    letterSpacing: 0.5,
   },
   settingsBtn: {
     width: 36,
@@ -119,8 +158,9 @@ const styles = StyleSheet.create({
     borderRadius: 18,
     backgroundColor: Colors.surface,
     borderWidth: 1,
-    borderColor: Colors.border,
+    borderColor: Colors.borderGlass,
     alignItems: 'center',
     justifyContent: 'center',
   },
 });
+

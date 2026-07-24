@@ -4,28 +4,29 @@ import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { useLocalSearchParams, useRouter } from 'expo-router';
 import { Colors, Layout } from '../constants/theme';
 import { WorkoutExportModal } from '../components/WorkoutExportModal';
-import { REAL_SWIM_WORKOUTS, DetailedWorkoutSetItem } from '../services/workoutService';
+import { RestTimer } from '../components/RestTimer';
+import { REAL_SWIM_WORKOUTS, DetailedWorkoutSetItem, saveWorkoutLog } from '../services/workoutService';
 import { Workout } from '../types/swimming';
-import { Ionicons } from '@expo/vector-icons';
+import { Ionicons, MaterialCommunityIcons } from '@expo/vector-icons';
 
 export default function WorkoutDetailScreen() {
   const router = useRouter();
   const insets = useSafeAreaInsets();
   const { title, type } = useLocalSearchParams<{ title?: string; type?: string }>();
   const [exportModalVisible, setExportModalVisible] = useState(false);
+  const [activeRestSeconds, setActiveRestSeconds] = useState<number | null>(null);
 
   const workoutTitle = title || 'Interval Training';
   const matchedPlan = REAL_SWIM_WORKOUTS[workoutTitle] || REAL_SWIM_WORKOUTS['Interval Training'];
-
   const sampleSets: DetailedWorkoutSetItem[] = matchedPlan.sets;
 
   const getIntensityColor = (percent: number) => {
-    if (percent <= 40) return '#E2E8F0'; // White / Light Grey
-    if (percent <= 60) return '#3B82F6'; // Blue
-    if (percent <= 70) return '#22C55E'; // Green
-    if (percent <= 80) return '#FACC15'; // Yellow
-    if (percent <= 90) return '#F97316'; // Orange
-    return '#EF4444'; // Red
+    if (percent <= 40) return Colors.secondary; 
+    if (percent <= 60) return Colors.green; 
+    if (percent <= 70) return Colors.primary; 
+    if (percent <= 80) return Colors.warning; 
+    if (percent <= 90) return Colors.accent; 
+    return Colors.red; 
   };
 
   const sections: ('Warmup' | 'Preparation' | 'Main' | 'Cool Down')[] = [
@@ -34,6 +35,16 @@ export default function WorkoutDetailScreen() {
     'Main',
     'Cool Down'
   ];
+
+  const getSectionTurkishTitle = (sec: string) => {
+    switch (sec) {
+      case 'Warmup': return ' Isınma Bölümü';
+      case 'Preparation': return ' Hazırlık & Teknik Sets';
+      case 'Main': return '🔥 Ana Set';
+      case 'Cool Down': return '❄️ Soğuma Bölümü';
+      default: return sec;
+    }
+  };
 
   const activeWorkoutObj: Workout = {
     id: matchedPlan.id,
@@ -55,68 +66,113 @@ export default function WorkoutDetailScreen() {
     }))
   };
 
+  const handleFinishWorkout = async () => {
+    await saveWorkoutLog({
+      id: 'log-' + Date.now(),
+      workoutId: matchedPlan.id,
+      workoutTitle: matchedPlan.title,
+      completedAt: new Date().toISOString(),
+      durationMinutes: matchedPlan.estimatedTimeMin,
+      totalDistance: matchedPlan.totalDistance,
+      notes: 'Canlı modda tamamlandı.'
+    });
+
+    Alert.alert('Tebrikler! 🏆', `${matchedPlan.totalDistance}m antrenmanı tamamlandı ve geçmişe kaydedildi!`, [
+      { text: 'Ana Sayfaya Dön', onPress: () => router.push('/(tabs)') }
+    ]);
+  };
+
   return (
     <View style={styles.screen}>
       {/* Top Bar Header */}
-      <View style={[styles.headerBar, { paddingTop: Math.max(insets.top, 16) + 8 }]}>
+      <View style={[styles.headerBar, { paddingTop: Math.max(insets.top, 16) + 6 }]}>
         <TouchableOpacity style={styles.backBtn} onPress={() => router.back()}>
           <Ionicons name="chevron-back" size={24} color={Colors.textPrimary} />
         </TouchableOpacity>
 
         <View style={styles.titleBadge}>
-          <View style={styles.badgeIcon}>
-            <Text style={styles.badgeIconText}>
-              {matchedPlan.title.substring(0, 2).toUpperCase()}
-            </Text>
-          </View>
           <Text style={styles.badgeTitle}>{matchedPlan.title}</Text>
         </View>
 
-        <View style={{ width: 24 }} />
+        <TouchableOpacity 
+          style={styles.exportHeaderBtn}
+          onPress={() => setExportModalVisible(true)}
+          activeOpacity={0.8}
+        >
+          <MaterialCommunityIcons name="file-pdf-box" size={20} color={Colors.secondary} />
+          <Ionicons name="watch-outline" size={18} color={Colors.primary} />
+        </TouchableOpacity>
       </View>
 
-      {/* Training Glossary Link */}
-      <TouchableOpacity 
-        style={styles.glossaryRow}
-        onPress={() => Alert.alert('Training Glossary', 'Yüzme drilleri, hipoksik nefes ve tempo zonları rehberi.')}
-      >
-        <Ionicons name="information-circle-outline" size={16} color={Colors.textSecondary} />
-        <Text style={styles.glossaryText}>Training Glossary</Text>
-      </TouchableOpacity>
+      {/* Training Summary Header Strip */}
+      <View style={styles.summaryStrip}>
+        <View style={styles.summaryMetric}>
+          <Text style={styles.summaryLabel}>TOPLAM MESAFE</Text>
+          <Text style={styles.summaryVal}>{(matchedPlan.totalDistance / 1000).toFixed(1)} km</Text>
+        </View>
+
+        <View style={styles.summaryDivider} />
+
+        <View style={styles.summaryMetric}>
+          <Text style={styles.summaryLabel}>TAHMİNİ SÜRE</Text>
+          <Text style={styles.summaryVal}>{matchedPlan.estimatedTimeMin} dk</Text>
+        </View>
+
+        <View style={styles.summaryDivider} />
+
+        <View style={styles.summaryMetric}>
+          <Text style={styles.summaryLabel}>HAVUZ KULVARI</Text>
+          <Text style={styles.summaryVal}>{matchedPlan.poolLength}m</Text>
+        </View>
+      </View>
 
       {/* Main Content List */}
-      <ScrollView style={styles.container} contentContainerStyle={styles.content}>
+      <ScrollView style={styles.container} contentContainerStyle={styles.content} showsVerticalScrollIndicator={false}>
         {sections.map((sec) => {
           const secSets = sampleSets.filter(s => s.category === sec);
           if (secSets.length === 0) return null;
 
           return (
             <View key={sec} style={styles.sectionCard}>
-              <Text style={styles.sectionTitle}>{sec}</Text>
+              <Text style={styles.sectionTitle}>{getSectionTurkishTitle(sec)}</Text>
 
               <View style={styles.setsList}>
                 {secSets.map((item) => (
                   <View key={item.id} style={styles.setRow}>
                     <View style={styles.setRowLeft}>
-                      {/* Intensity Color Square */}
-                      <View style={[styles.colorSquare, { backgroundColor: getIntensityColor(item.intensityPercent) }]} />
+                      {/* Intensity Color Bar */}
+                      <View style={[styles.colorBar, { backgroundColor: getIntensityColor(item.intensityPercent) }]} />
 
-                      {/* Reps x Distance */}
-                      <Text style={styles.repsText}>
-                        {item.reps > 1 ? `${item.reps}×${item.distance}` : `${item.distance}`}
-                      </Text>
+                      <View style={styles.setTextCol}>
+                        <View style={styles.repsRow}>
+                          <Text style={styles.repsText}>
+                            {item.reps > 1 ? `${item.reps} × ${item.distance}m` : `${item.distance}m`}
+                          </Text>
+                          <View style={[styles.intensityPill, { backgroundColor: getIntensityColor(item.intensityPercent) + '20' }]}>
+                            <Text style={[styles.intensityPillText, { color: getIntensityColor(item.intensityPercent) }]}>
+                              %{item.intensityPercent} Yoğunluk
+                            </Text>
+                          </View>
+                        </View>
 
-                      {/* Stroke & Description */}
-                      <Text style={styles.strokeText} numberOfLines={2}>
-                        {item.stroke}
-                      </Text>
+                        <Text style={styles.strokeText} numberOfLines={2}>
+                          {item.stroke}
+                        </Text>
+                      </View>
                     </View>
 
-                    {/* Rest Time */}
-                    <View style={styles.restTimerRight}>
-                      <Ionicons name="time-outline" size={13} color={Colors.textSecondary} />
+                    {/* Rest Timer Button */}
+                    <TouchableOpacity 
+                      style={styles.restTimerRight}
+                      onPress={() => {
+                        const secNum = parseInt(item.restTimeFormatted.split(':')[1] || '30');
+                        setActiveRestSeconds(secNum);
+                      }}
+                      activeOpacity={0.8}
+                    >
+                      <Ionicons name="timer-outline" size={14} color={Colors.primary} />
                       <Text style={styles.restText}>{item.restTimeFormatted}</Text>
-                    </View>
+                    </TouchableOpacity>
                   </View>
                 ))}
               </View>
@@ -127,16 +183,29 @@ export default function WorkoutDetailScreen() {
         <View style={{ height: 90 }} />
       </ScrollView>
 
-      {/* Floating Bottom Button: Session Actions */}
-      <View style={styles.bottomBar}>
+      {/* Bottom Floating Bar */}
+      <View style={[styles.bottomBar, { paddingBottom: Math.max(insets.bottom, 16) }]}>
         <TouchableOpacity
-          style={styles.sessionActionsBtn}
-          onPress={() => setExportModalVisible(true)}
+          style={styles.finishBtn}
+          onPress={handleFinishWorkout}
           activeOpacity={0.85}
         >
-          <Text style={styles.sessionActionsText}>Session Actions</Text>
+          <Ionicons name="checkmark-done" size={20} color="#070C16" />
+          <Text style={styles.finishBtnText}>ANTRENMANI TAMAMLADIM 🏆</Text>
         </TouchableOpacity>
       </View>
+
+      {/* Rest Timer Modal Overlay */}
+      {activeRestSeconds !== null && (
+        <RestTimer
+          initialSeconds={activeRestSeconds}
+          onClose={() => setActiveRestSeconds(null)}
+          onFinish={() => {
+            setActiveRestSeconds(null);
+            Alert.alert('Mola Bitti! 🏊', 'Bir sonraki sete hazırsın!');
+          }}
+        />
+      )}
 
       {/* Export Modal */}
       <WorkoutExportModal
@@ -158,57 +227,72 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'space-between',
     paddingHorizontal: Layout.spacing.md,
-    paddingBottom: Layout.spacing.sm,
+    paddingBottom: Layout.spacing.xs,
+    backgroundColor: Colors.background,
   },
   backBtn: {
-    padding: 4,
+    padding: 6,
   },
   titleBadge: {
     flexDirection: 'row',
     alignItems: 'center',
     backgroundColor: Colors.surface,
-    borderColor: '#78350F',
+    borderColor: Colors.borderGlass,
     borderWidth: 1,
     paddingHorizontal: 14,
     paddingVertical: 6,
     borderRadius: Layout.borderRadius.full,
-    gap: 8,
-  },
-  badgeIcon: {
-    width: 20,
-    height: 20,
-    borderRadius: 10,
-    backgroundColor: Colors.primary + '20',
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
-  badgeIconText: {
-    color: Colors.primary,
-    fontSize: 10,
-    fontWeight: '900',
   },
   badgeTitle: {
     color: Colors.textPrimary,
     fontSize: 15,
     fontWeight: '800',
   },
-  glossaryRow: {
+  exportHeaderBtn: {
     flexDirection: 'row',
     alignItems: 'center',
-    paddingHorizontal: Layout.spacing.md,
-    marginBottom: Layout.spacing.sm,
-    gap: 6,
+    gap: 8,
+    padding: 4,
   },
-  glossaryText: {
-    color: Colors.textSecondary,
-    fontSize: 13,
-    fontWeight: '600',
+  summaryStrip: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-around',
+    backgroundColor: Colors.surface,
+    marginHorizontal: Layout.spacing.md,
+    marginVertical: Layout.spacing.xs,
+    paddingVertical: 10,
+    paddingHorizontal: 12,
+    borderRadius: Layout.borderRadius.md,
+    borderWidth: 1,
+    borderColor: Colors.borderGlass,
+  },
+  summaryMetric: {
+    alignItems: 'center',
+  },
+  summaryLabel: {
+    color: Colors.textMuted,
+    fontSize: 9,
+    fontWeight: '800',
+    letterSpacing: 0.5,
+  },
+  summaryVal: {
+    color: Colors.textPrimary,
+    fontSize: 14,
+    fontWeight: '900',
+    marginTop: 2,
+  },
+  summaryDivider: {
+    width: 1,
+    height: 20,
+    backgroundColor: Colors.borderGlass,
   },
   container: {
     flex: 1,
   },
   content: {
     paddingHorizontal: Layout.spacing.md,
+    paddingTop: Layout.spacing.xs,
     paddingBottom: 40,
   },
   sectionCard: {
@@ -217,21 +301,23 @@ const styles = StyleSheet.create({
     padding: Layout.spacing.md,
     marginBottom: Layout.spacing.md,
     borderWidth: 1,
-    borderColor: Colors.border,
+    borderColor: Colors.borderGlass,
+    ...Layout.shadows.card,
   },
   sectionTitle: {
     color: Colors.textPrimary,
-    fontSize: 18,
+    fontSize: 16,
     fontWeight: '800',
     marginBottom: Layout.spacing.md,
   },
   setsList: {
-    gap: 14,
+    gap: 12,
   },
   setRow: {
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'space-between',
+    paddingVertical: 6,
   },
   setRowLeft: {
     flexDirection: 'row',
@@ -240,60 +326,79 @@ const styles = StyleSheet.create({
     flex: 1,
     marginRight: 10,
   },
-  colorSquare: {
-    width: 12,
-    height: 12,
-    borderRadius: 3,
+  colorBar: {
+    width: 4,
+    height: 40,
+    borderRadius: 2,
+  },
+  setTextCol: {
+    flex: 1,
+  },
+  repsRow: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 8,
+    marginBottom: 2,
   },
   repsText: {
     color: Colors.textPrimary,
     fontSize: 15,
     fontWeight: '900',
-    minWidth: 55,
+  },
+  intensityPill: {
+    paddingHorizontal: 6,
+    paddingVertical: 2,
+    borderRadius: Layout.borderRadius.sm,
+  },
+  intensityPillText: {
+    fontSize: 10,
+    fontWeight: '800',
   },
   strokeText: {
-    color: Colors.textPrimary,
-    fontSize: 13,
-    flex: 1,
-    lineHeight: 18,
+    color: Colors.textSecondary,
+    fontSize: 12,
+    lineHeight: 16,
   },
   restTimerRight: {
     flexDirection: 'row',
     alignItems: 'center',
     gap: 4,
     backgroundColor: Colors.surfaceLight,
-    paddingHorizontal: 8,
-    paddingVertical: 4,
-    borderRadius: Layout.borderRadius.sm,
+    borderColor: Colors.borderGlass,
+    borderWidth: 1,
+    paddingHorizontal: 10,
+    paddingVertical: 6,
+    borderRadius: Layout.borderRadius.full,
   },
   restText: {
-    color: Colors.textSecondary,
+    color: Colors.primary,
     fontSize: 12,
-    fontWeight: '600',
+    fontWeight: '800',
   },
   bottomBar: {
     position: 'absolute',
-    bottom: 20,
-    left: 20,
-    right: 20,
-    alignItems: 'center',
+    bottom: 0,
+    left: 0,
+    right: 0,
+    paddingHorizontal: Layout.spacing.md,
+    paddingTop: 10,
+    backgroundColor: Colors.background + 'EE',
   },
-  sessionActionsBtn: {
-    backgroundColor: Colors.textPrimary,
-    width: '100%',
-    paddingVertical: 16,
-    borderRadius: Layout.borderRadius.full,
+  finishBtn: {
+    flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'center',
-    shadowColor: '#000',
-    shadowOffset: { width: 0, height: 4 },
-    shadowOpacity: 0.3,
-    shadowRadius: 8,
-    elevation: 6,
+    backgroundColor: Colors.primary,
+    paddingVertical: 14,
+    borderRadius: Layout.borderRadius.full,
+    gap: 8,
+    ...Layout.shadows.glowYellow,
   },
-  sessionActionsText: {
-    color: Colors.background,
-    fontSize: 16,
-    fontWeight: '800',
+  finishBtnText: {
+    color: '#070C16',
+    fontSize: 14,
+    fontWeight: '900',
+    letterSpacing: 0.5,
   },
 });
+

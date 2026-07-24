@@ -3,130 +3,172 @@ import { View, Text, StyleSheet, ScrollView, TouchableOpacity, Alert } from 'rea
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { useRouter } from 'expo-router';
 import { Colors, Layout } from '../../constants/theme';
-import { ArcGaugeChart } from '../../components/ArcGaugeChart';
 import { WorkoutExportModal } from '../../components/WorkoutExportModal';
 import { INITIAL_WORKOUTS } from '../../services/workoutService';
 import { Workout } from '../../types/swimming';
 import { Ionicons, MaterialCommunityIcons } from '@expo/vector-icons';
 
+type FilterCategory = 'Tümü' | '25m Havuz' | '50m Havuz' | 'Açık Su' | 'Başlangıç' | 'İleri';
+
 export default function TrainingScreen() {
   const router = useRouter();
   const insets = useSafeAreaInsets();
+  const [activeFilter, setActiveFilter] = useState<FilterCategory>('Tümü');
   const [exportWorkout, setExportWorkout] = useState<Workout | null>(null);
 
-  const currentWeekWorkouts = [
-    { day: 'MON', title: 'Interval Training', dist: '2.4 km', color: Colors.accent },
-    { day: 'WED', title: 'Long Distance', dist: '3 km', color: Colors.secondary },
-    { day: 'FRI', title: 'Long Speed', dist: '2.8 km', color: Colors.green },
-    { day: 'SAT', title: 'Long Distance', dist: '2.5 km', color: Colors.secondary },
-    { day: 'SUN', title: 'Interval Training', dist: '2.4 km', color: Colors.accent },
-  ];
+  const filters: FilterCategory[] = ['Tümü', '25m Havuz', '50m Havuz', 'Açık Su', 'Başlangıç', 'İleri'];
 
-  const handleSelectWorkout = (item: { day: string; title: string; dist: string }) => {
+  const filteredWorkouts = INITIAL_WORKOUTS.filter(w => {
+    if (activeFilter === 'Tümü') return true;
+    if (activeFilter === '25m Havuz') return w.poolLength === 25;
+    if (activeFilter === '50m Havuz') return w.poolLength === 50;
+    if (activeFilter === 'Açık Su') return w.title.toLowerCase().includes('marathon') || w.title.toLowerCase().includes('swimathon');
+    if (activeFilter === 'Başlangıç') return (w.level as string) === 'Başlangıç' || (w.level as string) === 'Intermediate Level';
+    if (activeFilter === 'İleri') return (w.level as string) === 'İleri' || (w.level as string) === 'Advanced Level';
+    return true;
+  });
+
+
+  const handleSelectWorkout = (workout: Workout) => {
     router.push({
       pathname: '/workout-detail',
-      params: { title: item.title, type: item.title }
+      params: { title: workout.title, type: workout.title }
     });
   };
 
-  const handleOpenExport = (title: string, e?: any) => {
+  const handleOpenExport = (workout: Workout, e?: any) => {
     if (e && e.stopPropagation) e.stopPropagation();
-    const matched = INITIAL_WORKOUTS.find(w => w.title.toLowerCase().includes(title.toLowerCase())) || INITIAL_WORKOUTS[0];
-    setExportWorkout(matched);
+    setExportWorkout(workout);
   };
 
   return (
     <View style={styles.screen}>
       {/* Top Header */}
-      <View style={[styles.topHeader, { paddingTop: Math.max(insets.top, 16) + 8 }]}>
-        <View style={styles.avatarMini}>
-          <Text style={{ fontSize: 16 }}>🐤</Text>
+      <View style={[styles.topHeader, { paddingTop: Math.max(insets.top, 16) + 6 }]}>
+        <View style={styles.headerTitleRow}>
+          <MaterialCommunityIcons name="swim" size={24} color={Colors.primary} />
+          <Text style={styles.pageTitle}>Antrenman Kütüphanesi</Text>
         </View>
 
-        <Text style={styles.pageTitle}>Training</Text>
-
-        <View style={styles.headerRightActions}>
-          <TouchableOpacity style={styles.getProPill} onPress={() => Alert.alert('Pro Paket', 'Yakında aktif olacağını bildirmek isteriz.')}>
-            <Text style={styles.getProText}>Get Pro</Text>
-          </TouchableOpacity>
-
-          <TouchableOpacity style={styles.bellBtn}>
-            <Ionicons name="notifications-outline" size={20} color={Colors.textPrimary} />
-          </TouchableOpacity>
-        </View>
-      </View>
-
-      {/* Sub-menu Links */}
-      <View style={styles.subLinksRow}>
-        <TouchableOpacity style={styles.subLinkItem}>
-          <Text style={styles.subLinkText}>Session History</Text>
-        </TouchableOpacity>
-        <TouchableOpacity style={styles.subLinkItem}>
-          <Text style={styles.subLinkText}>Rearrange Workouts</Text>
-        </TouchableOpacity>
-        <TouchableOpacity style={styles.subLinkItem}>
-          <Text style={styles.subLinkText}>Connected Apps</Text>
-        </TouchableOpacity>
-        <TouchableOpacity style={styles.subLinkItem}>
-          <Text style={styles.subLinkText}>Manage Plan</Text>
+        <TouchableOpacity 
+          style={styles.getProPill} 
+          onPress={() => Alert.alert('Pro Paket 👑', 'Yakında aktif olacağını bildirmek isteriz.')}
+          activeOpacity={0.8}
+        >
+          <Ionicons name="sparkles" size={12} color="#070C16" style={{ marginRight: 3 }} />
+          <Text style={styles.getProText}>PRO</Text>
         </TouchableOpacity>
       </View>
 
-      <ScrollView style={styles.container} contentContainerStyle={styles.content}>
-        {/* Arc Gauge Plan Summary Card */}
-        <ArcGaugeChart />
+      {/* Filter Chips Horizontal Scroll */}
+      <View style={styles.filterBar}>
+        <ScrollView horizontal showsHorizontalScrollIndicator={false} contentContainerStyle={styles.filterContent}>
+          {filters.map(filter => (
+            <TouchableOpacity
+              key={filter}
+              style={[
+                styles.chip,
+                activeFilter === filter && styles.chipActive
+              ]}
+              onPress={() => setActiveFilter(filter)}
+              activeOpacity={0.8}
+            >
+              <Text style={[
+                styles.chipText,
+                activeFilter === filter && styles.chipTextActive
+              ]}>
+                {filter}
+              </Text>
+            </TouchableOpacity>
+          ))}
+        </ScrollView>
+      </View>
 
-        {/* Current Week Plan Card */}
-        <View style={styles.currentWeekCard}>
-          <Text style={styles.weekDateSub}>WEEK 8 : 18 MAY - 24 MAY</Text>
-          <Text style={styles.currentWeekTitle}>Current Week</Text>
+      <ScrollView style={styles.container} contentContainerStyle={styles.content} showsVerticalScrollIndicator={false}>
+        {/* Count Header */}
+        <View style={styles.listHeaderRow}>
+          <Text style={styles.listHeaderTitle}>
+            Program Listesi <Text style={{ color: Colors.secondary }}>({filteredWorkouts.length})</Text>
+          </Text>
+          <Text style={styles.listSubText}>Resmi 10-Haftalık & Seviye Antrenmanları</Text>
+        </View>
 
-          {/* 5-Segment Progress Bar */}
-          <View style={styles.segmentTrack}>
-            <View style={[styles.segment, { backgroundColor: Colors.secondary }]} />
-            <View style={[styles.segment, { backgroundColor: Colors.primary }]} />
-            <View style={[styles.segment, { backgroundColor: Colors.accent }]} />
-            <View style={[styles.segment, { backgroundColor: Colors.green }]} />
-            <View style={[styles.segment, { backgroundColor: Colors.red }]} />
-          </View>
+        {/* Workouts Grid / Cards List */}
+        <View style={styles.workoutListGroup}>
+          {filteredWorkouts.map((workout) => (
+            <TouchableOpacity
+              key={workout.id}
+              style={styles.workoutCard}
+              onPress={() => handleSelectWorkout(workout)}
+              activeOpacity={0.85}
+            >
+              <View style={styles.cardHeaderRow}>
+                <View style={styles.badgesRow}>
+                  <View style={[
+                    styles.levelBadge,
+                    { backgroundColor: workout.level.includes('Advanced') || workout.level === 'İleri' ? Colors.accent + '20' : Colors.secondary + '20' }
+                  ]}>
+                    <Text style={[
+                      styles.levelBadgeText,
+                      { color: workout.level.includes('Advanced') || workout.level === 'İleri' ? Colors.accent : Colors.secondary }
+                    ]}>
+                      {workout.level}
+                    </Text>
+                  </View>
 
-          <View style={styles.weekStatsRow}>
-            <Text style={styles.weekStatText}>Total Sessions: <Text style={styles.boldVal}>5</Text></Text>
-            <Text style={styles.weekStatText}>Distance: <Text style={styles.boldVal}>13.1 km</Text></Text>
-          </View>
-
-          <View style={styles.divider} />
-
-          {/* List of Workouts for Current Week */}
-          <View style={styles.listGroup}>
-            {currentWeekWorkouts.map((w, idx) => (
-              <TouchableOpacity
-                key={idx}
-                style={styles.weekWorkoutRow}
-                onPress={() => handleSelectWorkout(w)}
-                activeOpacity={0.8}
-              >
-                <View style={[styles.colorSquare, { backgroundColor: w.color + '40' }]}>
-                  <View style={[styles.innerSquare, { backgroundColor: w.color }]} />
+                  <View style={styles.poolBadge}>
+                    <Text style={styles.poolBadgeText}>🏊 {workout.poolLength}m</Text>
+                  </View>
                 </View>
 
-                <Text style={styles.dayTag}>{w.day}</Text>
-                
-                <Text style={styles.workoutInfoText}>
-                  {w.title} <Text style={styles.dot}>•</Text> {w.dist}
-                </Text>
+                <TouchableOpacity 
+                  style={styles.exportBtn}
+                  onPress={(e) => handleOpenExport(workout, e)}
+                  activeOpacity={0.8}
+                >
+                  <MaterialCommunityIcons name="file-pdf-box" size={20} color={Colors.secondary} />
+                  <Ionicons name="watch-outline" size={18} color={Colors.primary} />
+                </TouchableOpacity>
+              </View>
+
+              <Text style={styles.cardTitle}>{workout.title}</Text>
+              <Text style={styles.cardDesc} numberOfLines={2}>{workout.description}</Text>
+
+              {/* Set Category Visual Progress Bar */}
+              <View style={styles.cardSetTrack}>
+                <View style={[styles.setSegment, { flex: 2, backgroundColor: Colors.secondary }]} />
+                <View style={[styles.setSegment, { flex: 3, backgroundColor: Colors.primary }]} />
+                <View style={[styles.setSegment, { flex: 5, backgroundColor: Colors.accent }]} />
+                <View style={[styles.setSegment, { flex: 2, backgroundColor: Colors.green }]} />
+              </View>
+
+              <View style={styles.cardFooter}>
+                <View style={styles.cardStat}>
+                  <Text style={styles.statLabel}>Mesafe</Text>
+                  <Text style={styles.statValue}>{(workout.totalDistance / 1000).toFixed(1)} km</Text>
+                </View>
+
+                <View style={styles.cardStat}>
+                  <Text style={styles.statLabel}>Tahmini</Text>
+                  <Text style={styles.statValue}>{workout.estimatedTimeMin} dk</Text>
+                </View>
+
+                <View style={styles.cardStat}>
+                  <Text style={styles.statLabel}>Set Sayısı</Text>
+                  <Text style={styles.statValue}>{workout.sets.length} Set</Text>
+                </View>
 
                 <TouchableOpacity 
-                  style={styles.actionRow}
-                  onPress={(e) => handleOpenExport(w.title, e)}
-                  activeOpacity={0.7}
+                  style={styles.cardStartBtn}
+                  onPress={() => handleSelectWorkout(workout)}
+                  activeOpacity={0.85}
                 >
-                  <Ionicons name="watch-outline" size={17} color={Colors.primary} />
-                  <MaterialCommunityIcons name="file-pdf-box" size={17} color={Colors.secondary} />
+                  <Ionicons name="play" size={14} color="#070C16" />
+                  <Text style={styles.cardStartBtnText}>Başlat</Text>
                 </TouchableOpacity>
-              </TouchableOpacity>
-            ))}
-          </View>
+              </View>
+            </TouchableOpacity>
+          ))}
         </View>
       </ScrollView>
 
@@ -150,59 +192,62 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'space-between',
     paddingHorizontal: Layout.spacing.md,
-    paddingBottom: Layout.spacing.sm,
+    paddingBottom: Layout.spacing.xs,
     backgroundColor: Colors.background,
   },
-  avatarMini: {
-    width: 38,
-    height: 38,
-    borderRadius: 19,
-    backgroundColor: Colors.primary,
+  headerTitleRow: {
+    flexDirection: 'row',
     alignItems: 'center',
-    justifyContent: 'center',
+    gap: 8,
   },
   pageTitle: {
     color: Colors.textPrimary,
     fontSize: 20,
     fontWeight: '900',
   },
-  headerRightActions: {
+  getProPill: {
     flexDirection: 'row',
     alignItems: 'center',
-    gap: 10,
-  },
-  getProPill: {
-    backgroundColor: Colors.primary + '20',
-    borderColor: Colors.primary,
-    borderWidth: 1,
+    backgroundColor: Colors.primary,
     paddingHorizontal: 12,
     paddingVertical: 5,
     borderRadius: Layout.borderRadius.full,
+    ...Layout.shadows.glowYellow,
   },
   getProText: {
-    color: Colors.primary,
-    fontSize: 12,
-    fontWeight: '800',
-  },
-  bellBtn: {
-    padding: 6,
-  },
-  subLinksRow: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    justifyContent: 'space-around',
-    paddingVertical: 10,
-    backgroundColor: Colors.surface,
-    borderBottomWidth: 1,
-    borderBottomColor: Colors.border,
-  },
-  subLinkItem: {
-    paddingVertical: 4,
-  },
-  subLinkText: {
-    color: Colors.textSecondary,
+    color: '#070C16',
     fontSize: 11,
-    fontWeight: '600',
+    fontWeight: '900',
+  },
+  filterBar: {
+    paddingVertical: 6,
+    borderBottomWidth: 1,
+    borderBottomColor: Colors.borderGlass,
+  },
+  filterContent: {
+    paddingHorizontal: Layout.spacing.md,
+    gap: 8,
+  },
+  chip: {
+    paddingHorizontal: 14,
+    paddingVertical: 6,
+    borderRadius: Layout.borderRadius.full,
+    backgroundColor: Colors.surface,
+    borderWidth: 1,
+    borderColor: Colors.borderGlass,
+  },
+  chipActive: {
+    backgroundColor: Colors.secondary + '20',
+    borderColor: Colors.secondary,
+  },
+  chipText: {
+    color: Colors.textMuted,
+    fontSize: 12,
+    fontWeight: '700',
+  },
+  chipTextActive: {
+    color: Colors.secondary,
+    fontWeight: '900',
   },
   container: {
     flex: 1,
@@ -211,97 +256,126 @@ const styles = StyleSheet.create({
     padding: Layout.spacing.md,
     paddingBottom: 40,
   },
-  currentWeekCard: {
+  listHeaderRow: {
+    marginBottom: Layout.spacing.sm,
+  },
+  listHeaderTitle: {
+    color: Colors.textPrimary,
+    fontSize: 16,
+    fontWeight: '900',
+  },
+  listSubText: {
+    color: Colors.textMuted,
+    fontSize: 12,
+    marginTop: 2,
+  },
+  workoutListGroup: {
+    gap: 12,
+  },
+  workoutCard: {
     backgroundColor: Colors.surface,
     borderRadius: Layout.borderRadius.lg,
     padding: Layout.spacing.md,
-    marginTop: Layout.spacing.md,
     borderWidth: 1,
-    borderColor: Colors.border,
+    borderColor: Colors.borderGlass,
+    ...Layout.shadows.card,
   },
-  weekDateSub: {
-    color: Colors.textSecondary,
-    fontSize: 10,
-    fontWeight: '800',
-    letterSpacing: 1,
-  },
-  currentWeekTitle: {
-    color: Colors.textPrimary,
-    fontSize: 18,
-    fontWeight: '900',
-    marginBottom: Layout.spacing.sm,
-  },
-  segmentTrack: {
-    flexDirection: 'row',
-    height: 6,
-    borderRadius: 3,
-    overflow: 'hidden',
-    gap: 4,
-    marginBottom: Layout.spacing.sm,
-  },
-  segment: {
-    flex: 1,
-  },
-  weekStatsRow: {
+  cardHeaderRow: {
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'space-between',
-    marginBottom: Layout.spacing.sm,
+    marginBottom: 8,
   },
-  weekStatText: {
-    color: Colors.textSecondary,
-    fontSize: 12,
-  },
-  boldVal: {
-    color: Colors.textPrimary,
-    fontWeight: '800',
-  },
-  divider: {
-    height: 1,
-    backgroundColor: Colors.border,
-    marginBottom: Layout.spacing.sm,
-  },
-  listGroup: {
+  badgesRow: {
+    flexDirection: 'row',
+    alignItems: 'center',
     gap: 6,
   },
-  weekWorkoutRow: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    paddingVertical: 10,
+  levelBadge: {
     paddingHorizontal: 8,
+    paddingVertical: 3,
     borderRadius: Layout.borderRadius.sm,
   },
-  colorSquare: {
-    width: 20,
-    height: 20,
-    borderRadius: 5,
-    alignItems: 'center',
-    justifyContent: 'center',
-    marginRight: 10,
+  levelBadgeText: {
+    fontSize: 11,
+    fontWeight: '800',
   },
-  innerSquare: {
-    width: 8,
-    height: 8,
-    borderRadius: 2,
+  poolBadge: {
+    backgroundColor: Colors.surfaceLight,
+    paddingHorizontal: 8,
+    paddingVertical: 3,
+    borderRadius: Layout.borderRadius.sm,
   },
-  dayTag: {
-    color: Colors.textPrimary,
-    fontSize: 12,
-    fontWeight: '900',
-    width: 38,
-  },
-  workoutInfoText: {
-    color: Colors.textPrimary,
-    fontSize: 13,
-    fontWeight: '700',
-    flex: 1,
-  },
-  dot: {
+  poolBadgeText: {
     color: Colors.textSecondary,
+    fontSize: 11,
+    fontWeight: '700',
   },
-  actionRow: {
+  exportBtn: {
     flexDirection: 'row',
     alignItems: 'center',
-    gap: 12,
+    gap: 8,
+  },
+  cardTitle: {
+    color: Colors.textPrimary,
+    fontSize: 17,
+    fontWeight: '800',
+    marginBottom: 4,
+  },
+  cardDesc: {
+    color: Colors.textSecondary,
+    fontSize: 12,
+    lineHeight: 17,
+    marginBottom: 10,
+  },
+  cardSetTrack: {
+    flexDirection: 'row',
+    height: 4,
+    borderRadius: 2,
+    overflow: 'hidden',
+    gap: 2,
+    marginBottom: 12,
+  },
+  setSegment: {
+    height: '100%',
+    borderRadius: 1,
+  },
+  cardFooter: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-between',
+    paddingTop: 8,
+    borderTopWidth: 1,
+    borderTopColor: Colors.borderGlass,
+  },
+  cardStat: {
+    justifyContent: 'center',
+  },
+  statLabel: {
+    color: Colors.textMuted,
+    fontSize: 10,
+    fontWeight: '700',
+  },
+  statValue: {
+    color: Colors.textPrimary,
+    fontSize: 13,
+    fontWeight: '800',
+    marginTop: 1,
+  },
+  cardStartBtn: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    backgroundColor: Colors.primary,
+    paddingHorizontal: 14,
+    paddingVertical: 7,
+    borderRadius: Layout.borderRadius.md,
+    gap: 4,
+    ...Layout.shadows.glowYellow,
+  },
+  cardStartBtnText: {
+    color: '#070C16',
+    fontSize: 12,
+    fontWeight: '900',
   },
 });
+

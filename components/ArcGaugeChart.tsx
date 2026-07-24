@@ -1,6 +1,7 @@
 import React from 'react';
 import { View, Text, StyleSheet } from 'react-native';
 import { Colors, Layout } from '../constants/theme';
+import { Ionicons } from '@expo/vector-icons';
 
 export interface PlanSegment {
   name: string;
@@ -9,11 +10,11 @@ export interface PlanSegment {
 }
 
 export const DEFAULT_SEGMENTS: PlanSegment[] = [
-  { name: 'Long Distance', percentage: 38, color: Colors.secondary },
-  { name: 'Hybrid', percentage: 13, color: Colors.primary },
-  { name: 'Interval Training', percentage: 26, color: Colors.accent },
-  { name: 'Long Speed', percentage: 13, color: Colors.green },
-  { name: 'Pure Speed', percentage: 10, color: Colors.red },
+  { name: 'Uzun Mesafe', percentage: 38, color: Colors.secondary },
+  { name: 'Interval', percentage: 26, color: Colors.accent },
+  { name: 'Hibrit', percentage: 13, color: Colors.primary },
+  { name: 'Uzun Hız', percentage: 13, color: Colors.green },
+  { name: 'Saf Hız', percentage: 10, color: Colors.red },
 ];
 
 export const ArcGaugeChart: React.FC = () => {
@@ -22,9 +23,13 @@ export const ArcGaugeChart: React.FC = () => {
       <View style={styles.chartHeader}>
         <View style={styles.headerTitleRow}>
           <View style={styles.iconBox}>
-            <Text style={styles.iconText}>📊</Text>
+            <Ionicons name="pie-chart" size={16} color={Colors.primary} />
           </View>
-          <Text style={styles.headerTitle}>Plan Summary</Text>
+          <Text style={styles.headerTitle}>Plan Özeti</Text>
+        </View>
+
+        <View style={styles.targetBadge}>
+          <Text style={styles.targetBadgeText}>Haftalık 13.1 km</Text>
         </View>
       </View>
 
@@ -43,9 +48,9 @@ export const ArcGaugeChart: React.FC = () => {
         </View>
 
         <View style={styles.centerInfo}>
-          <Text style={styles.planTitle}>Oceanman</Text>
+          <Text style={styles.planTitle}>Oceanman & Open Water</Text>
           <Text style={styles.planSubtitle} numberOfLines={2}>
-            Train to stay strong, confident, and efficient in open water. Our main focus will be to help you hold pace through waves...
+            Dalga, akıntı ve yön bulma odaklı açık su ve kulvar dayanıklılık programı.
           </Text>
         </View>
       </View>
@@ -71,10 +76,14 @@ const styles = StyleSheet.create({
     borderRadius: Layout.borderRadius.lg,
     padding: Layout.spacing.md,
     borderWidth: 1,
-    borderColor: Colors.border,
+    borderColor: Colors.borderGlass,
     marginBottom: Layout.spacing.md,
+    ...Layout.shadows.card,
   },
   chartHeader: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-between',
     marginBottom: Layout.spacing.sm,
   },
   headerTitleRow: {
@@ -85,43 +94,56 @@ const styles = StyleSheet.create({
   iconBox: {
     width: 28,
     height: 28,
-    borderRadius: 6,
+    borderRadius: 8,
     backgroundColor: Colors.surfaceLight,
+    borderWidth: 1,
+    borderColor: Colors.borderGlass,
     alignItems: 'center',
     justifyContent: 'center',
   },
-  iconText: {
-    fontSize: 14,
-  },
   headerTitle: {
     color: Colors.textPrimary,
-    fontSize: 18,
+    fontSize: 17,
+    fontWeight: '800',
+  },
+  targetBadge: {
+    backgroundColor: 'rgba(56, 189, 248, 0.1)',
+    borderColor: Colors.secondary,
+    borderWidth: 1,
+    paddingHorizontal: 10,
+    paddingVertical: 4,
+    borderRadius: Layout.borderRadius.full,
+  },
+  targetBadgeText: {
+    color: Colors.secondary,
+    fontSize: 11,
     fontWeight: '800',
   },
   arcCard: {
     alignItems: 'center',
-    paddingVertical: Layout.spacing.md,
+    paddingVertical: Layout.spacing.xs,
   },
   multiTrack: {
     flexDirection: 'row',
-    height: 12,
+    height: 10,
     width: '100%',
-    borderRadius: 6,
+    borderRadius: 5,
     overflow: 'hidden',
-    gap: 4,
-    marginBottom: Layout.spacing.md,
+    gap: 3,
+    marginBottom: Layout.spacing.sm,
   },
   trackSegment: {
     height: '100%',
-    borderRadius: 4,
+    borderRadius: 3,
   },
   centerInfo: {
     alignItems: 'center',
-    paddingHorizontal: Layout.spacing.md,
+    paddingHorizontal: Layout.spacing.sm,
+    marginBottom: 4,
   },
   planTitle: {
     color: Colors.textPrimary,
-    fontSize: 24,
+    fontSize: 20,
     fontWeight: '900',
     marginBottom: 4,
   },
@@ -136,7 +158,10 @@ const styles = StyleSheet.create({
     flexWrap: 'wrap',
     justifyContent: 'center',
     gap: 12,
-    marginTop: Layout.spacing.sm,
+    marginTop: Layout.spacing.xs,
+    paddingTop: Layout.spacing.xs,
+    borderTopWidth: 1,
+    borderTopColor: Colors.borderGlass,
   },
   legendItem: {
     flexDirection: 'row',
@@ -144,8 +169,8 @@ const styles = StyleSheet.create({
     gap: 5,
   },
   dot: {
-    width: 8,
-    height: 8,
+    width: 7,
+    height: 7,
     borderRadius: 4,
   },
   legendText: {
@@ -154,6 +179,7 @@ const styles = StyleSheet.create({
   },
   percentText: {
     color: Colors.textPrimary,
-    fontWeight: '700',
+    fontWeight: '800',
   },
 });
+

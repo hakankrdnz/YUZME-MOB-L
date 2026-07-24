@@ -1,7 +1,8 @@
 import React from 'react';
 import { Tabs } from 'expo-router';
 import { Colors } from '../../constants/theme';
-import { Ionicons, Feather } from '@expo/vector-icons';
+import { Ionicons, MaterialCommunityIcons } from '@expo/vector-icons';
+import { View, StyleSheet, Platform } from 'react-native';
 
 export default function TabLayout() {
   return (
@@ -10,72 +11,96 @@ export default function TabLayout() {
         headerShown: false,
         tabBarStyle: {
           backgroundColor: Colors.surface,
-          borderTopColor: Colors.border,
+          borderTopColor: Colors.borderGlass,
           borderTopWidth: 1,
-          height: 64,
-          paddingBottom: 10,
+          height: Platform.OS === 'ios' ? 86 : 68,
+          paddingBottom: Platform.OS === 'ios' ? 28 : 10,
           paddingTop: 8,
+          elevation: 10,
+          shadowColor: '#000',
+          shadowOffset: { width: 0, height: -4 },
+          shadowOpacity: 0.25,
+          shadowRadius: 8,
         },
-        tabBarActiveTintColor: Colors.primary,   // Electric Yellow
+        tabBarActiveTintColor: Colors.primary,
         tabBarInactiveTintColor: Colors.textSecondary,
         tabBarLabelStyle: {
           fontSize: 11,
           fontWeight: '700',
+          letterSpacing: 0.2,
+          marginTop: 2,
         },
       }}
     >
       <Tabs.Screen
         name="index"
         options={{
-          title: 'Today',
+          title: 'Bugün',
           tabBarIcon: ({ color, focused }) => (
-            <Ionicons 
-              name={focused ? "sunny" : "sunny-outline"} 
-              color={color} 
-              size={22} 
-            />
+            <View style={focused ? styles.activeIconContainer : null}>
+              <Ionicons 
+                name={focused ? "flash" : "flash-outline"} 
+                color={color} 
+                size={22} 
+              />
+            </View>
           ),
         }}
       />
       <Tabs.Screen
         name="workouts"
         options={{
-          title: 'Training',
+          title: 'Antrenmanlar',
           tabBarIcon: ({ color, focused }) => (
-            <Ionicons 
-              name={focused ? "clipboard" : "clipboard-outline"} 
-              color={color} 
-              size={22} 
-            />
+            <View style={focused ? styles.activeIconContainer : null}>
+              <MaterialCommunityIcons 
+                name={focused ? "swim" : "swim"} 
+                color={color} 
+                size={24} 
+              />
+            </View>
           ),
         }}
       />
       <Tabs.Screen
         name="builder"
         options={{
-          title: 'Library',
+          title: 'Oluşturucu',
           tabBarIcon: ({ color, focused }) => (
-            <Ionicons 
-              name={focused ? "stats-chart" : "stats-chart-outline"} 
-              color={color} 
-              size={22} 
-            />
+            <View style={focused ? styles.activeIconContainer : null}>
+              <Ionicons 
+                name={focused ? "add-circle" : "add-circle-outline"} 
+                color={color} 
+                size={24} 
+              />
+            </View>
           ),
         }}
       />
       <Tabs.Screen
         name="history"
         options={{
-          title: 'Subscription',
+          title: 'Geçmiş',
           tabBarIcon: ({ color, focused }) => (
-            <Ionicons 
-              name={focused ? "person" : "person-outline"} 
-              color={color} 
-              size={22} 
-            />
+            <View style={focused ? styles.activeIconContainer : null}>
+              <Ionicons 
+                name={focused ? "stats-chart" : "stats-chart-outline"} 
+                color={color} 
+                size={22} 
+              />
+            </View>
           ),
         }}
       />
     </Tabs>
   );
 }
+
+const styles = StyleSheet.create({
+  activeIconContainer: {
+    padding: 3,
+    borderRadius: 12,
+    backgroundColor: Colors.primaryGlow,
+  }
+});
+
