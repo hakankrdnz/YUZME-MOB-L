@@ -76,7 +76,8 @@ export const REAL_SWIM_WORKOUTS: Record<string, DetailedWorkoutPlan> = {
     id: 'w-hybrid',
     title: 'Endurance + Hypoxic (Hybrid)',
     level: 'Advanced Level',
-    poolLength: 25,
+    poolLength: 50,
+
     totalDistance: 4500,
     estimatedTimeMin: 75,
     description: 'Akciğer kapasitesini artırma ve hipoksik nefes kontrolü odaklı ileri seviye antrenman.',
@@ -99,7 +100,8 @@ export const REAL_SWIM_WORKOUTS: Record<string, DetailedWorkoutPlan> = {
     id: 'w-longspeed',
     title: 'Long Speed',
     level: 'Advanced Level',
-    poolLength: 25,
+    poolLength: 50,
+
     totalDistance: 2900,
     estimatedTimeMin: 50,
     description: 'Uzun kulacın temposunu ve yüksek sürati koruma antrenmanı.',
@@ -122,7 +124,8 @@ export const REAL_SWIM_WORKOUTS: Record<string, DetailedWorkoutPlan> = {
     id: 'w-lungcapacity',
     title: 'Lung Capacity & Speed',
     level: 'Intermediate Level',
-    poolLength: 25,
+    poolLength: 50,
+
     totalDistance: 3200,
     estimatedTimeMin: 55,
     description: 'Her nefeste daha fazla oksijen alma ve akciğer kapasitesini geliştirme programı.',
@@ -145,7 +148,8 @@ export const REAL_SWIM_WORKOUTS: Record<string, DetailedWorkoutPlan> = {
     id: 'w-swimathon-25k-pace',
     title: 'Swimathon 2.5k (Pace Practice)',
     level: 'Intermediate Level',
-    poolLength: 25,
+    poolLength: 50,
+
     totalDistance: 2400,
     estimatedTimeMin: 45,
     description: 'Official Swimathon 2.5k 10-haftalık planın 8x100m sabit tempo ve kademeli ritim kontrolü antrenmanı.',
@@ -163,7 +167,8 @@ export const REAL_SWIM_WORKOUTS: Record<string, DetailedWorkoutPlan> = {
     id: 'w-swimathon-endurance-4x400',
     title: 'Swimathon Endurance (4x400m)',
     level: 'Intermediate Level',
-    poolLength: 25,
+    poolLength: 50,
+
     totalDistance: 2300,
     estimatedTimeMin: 42,
     description: 'Official Swimathon 4×400m sürdürülebilir tempo ve 4×25m depar hızlı bitiriş dayanıklılık seti.',
@@ -180,7 +185,8 @@ export const REAL_SWIM_WORKOUTS: Record<string, DetailedWorkoutPlan> = {
     id: 'w-ms-w1s1-steady',
     title: 'Marathon Swims W1S1 (Steady Intro)',
     level: 'Intermediate Level',
-    poolLength: 25,
+    poolLength: 50,
+
     totalDistance: 2400,
     estimatedTimeMin: 45,
     description: 'Swim for Tri (SFT) 5-Haftalık 5km Marathon Swims rehberinin 1. Hafta 1. Seansı (Pyramid 50m to 400m).',
@@ -209,7 +215,8 @@ export const REAL_SWIM_WORKOUTS: Record<string, DetailedWorkoutPlan> = {
     id: 'w-ms-w1s2-faster',
     title: 'Marathon Swims W1S2 (Faster Efforts 4x100s)',
     level: 'Advanced Level',
-    poolLength: 25,
+    poolLength: 50,
+
     totalDistance: 2200,
     estimatedTimeMin: 40,
     description: 'SFT Marathon Swims 16x100m Best Average sürat ve ritim dayanıklılık antrenmanı.',
@@ -228,7 +235,8 @@ export const REAL_SWIM_WORKOUTS: Record<string, DetailedWorkoutPlan> = {
     id: 'w-ms-w2s1-breathing',
     title: 'Marathon Swims W2S1 (Breathing Patterns)',
     level: 'Intermediate Level',
-    poolLength: 25,
+    poolLength: 50,
+
     totalDistance: 2100,
     estimatedTimeMin: 38,
     description: 'SFT Marathon Swims BP5 ➔ BP4 ➔ BP3 ➔ Snorkel nefes hipoksik dayanıklılık antrenmanı.',
@@ -248,7 +256,8 @@ export const REAL_SWIM_WORKOUTS: Record<string, DetailedWorkoutPlan> = {
     id: 'w-ms-w3s1-pacing-4x500',
     title: 'Marathon Swims W3S1 (Pacing 4x500m)',
     level: 'Advanced Level',
-    poolLength: 25,
+    poolLength: 50,
+
     totalDistance: 2600,
     estimatedTimeMin: 45,
     description: 'SFT 4 adet 500m blok (50m, 100m, 150m yarış temposu + 200m aktif dinlenme) maraton seti.',
@@ -267,7 +276,8 @@ export const REAL_SWIM_WORKOUTS: Record<string, DetailedWorkoutPlan> = {
     id: 'w-ms-w3s2-21x100',
     title: 'Marathon Swims W3S2 (21x100m Autopilot)',
     level: 'Advanced Level',
-    poolLength: 25,
+    poolLength: 50,
+
     totalDistance: 2700,
     estimatedTimeMin: 48,
     description: 'SFT 21 adet 100m serbest tekrarı ile sürtünmeyi düşürüp mükemmel teknikle bitirme seti.',
@@ -283,7 +293,8 @@ export const REAL_SWIM_WORKOUTS: Record<string, DetailedWorkoutPlan> = {
     id: 'w-ms-w4s3-7x400',
     title: 'Marathon Swims W4S3 (Long Distance 7x400m)',
     level: 'Advanced Level',
-    poolLength: 25,
+    poolLength: 50,
+
     totalDistance: 3400,
     estimatedTimeMin: 58,
     description: 'SFT 7 adet 400m maraton seti (tekli turlarda melek, çiftlilerde palet ile güç geliştirme).',
@@ -299,7 +310,8 @@ export const REAL_SWIM_WORKOUTS: Record<string, DetailedWorkoutPlan> = {
     id: 'w-ms-w5s1-exit-prep',
     title: 'Marathon Swims W5S1 (Event Prep 1600m Exit)',
     level: 'Advanced Level',
-    poolLength: 25,
+    poolLength: 50,
+
     totalDistance: 2200,
     estimatedTimeMin: 40,
     description: 'SFT 1600m Serbest tekrarında her 200m de bir havuzdan çıkıp ayakta nabız düşürme simülasyon seti.',
@@ -315,7 +327,8 @@ export const REAL_SWIM_WORKOUTS: Record<string, DetailedWorkoutPlan> = {
     id: 'w-ms-raceday-5k',
     title: 'Marathon Swims 5km Race Day Event',
     level: 'Advanced Level',
-    poolLength: 25,
+    poolLength: 50,
+
     totalDistance: 5600,
     estimatedTimeMin: 90,
     description: '5km Açık Su / Maraton Yüzme Yarış Günü (5000m Yarış + 600m Isınma/Soğuma).',

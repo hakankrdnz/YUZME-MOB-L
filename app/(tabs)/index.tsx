@@ -84,25 +84,17 @@ export default function HomeScreen() {
         userName="Hakan Karadeniz"
         streakCount={5}
         onGetPro={() => Alert.alert('Pro Paket 👑', 'Yakında aktif olacağını bildirmek isteriz! Özel performans grafiklerine erişebileceksiniz.')}
-        onSettings={() => Alert.alert('Ayarlar', 'Profil, Havuz Boyu (25m/50m) ve Garim Entegrasyonu ayarları')}
+        onSettings={() => Alert.alert('Ayarlar', 'Profil, Havuz Boyu (50m Olimpik) ve Garmin Entegrasyonu ayarları')}
       />
 
       {/* Pool Type Quick Switcher */}
       <View style={styles.poolSwitchRow}>
         <TouchableOpacity 
-          style={[styles.poolPill, activePoolType === '25m' && styles.poolPillActive]}
-          onPress={() => setActivePoolType('25m')}
-          activeOpacity={0.8}
-        >
-          <Text style={[styles.poolPillText, activePoolType === '25m' && styles.poolPillTextActive]}>🏊 25m Havuz</Text>
-        </TouchableOpacity>
-
-        <TouchableOpacity 
           style={[styles.poolPill, activePoolType === '50m' && styles.poolPillActive]}
           onPress={() => setActivePoolType('50m')}
           activeOpacity={0.8}
         >
-          <Text style={[styles.poolPillText, activePoolType === '50m' && styles.poolPillTextActive]}>🏊‍♀️ 50m Olimpik</Text>
+          <Text style={[styles.poolPillText, activePoolType === '50m' && styles.poolPillTextActive]}>🏊‍♀️ 50m Olimpik Havuz</Text>
         </TouchableOpacity>
 
         <TouchableOpacity 
@@ -110,9 +102,10 @@ export default function HomeScreen() {
           onPress={() => setActivePoolType('OpenWater')}
           activeOpacity={0.8}
         >
-          <Text style={[styles.poolPillText, activePoolType === 'OpenWater' && styles.poolPillTextActive]}>🌊 Açık Su</Text>
+          <Text style={[styles.poolPillText, activePoolType === 'OpenWater' && styles.poolPillTextActive]}>🌊 Açık Su (Open Water)</Text>
         </TouchableOpacity>
       </View>
+
 
       <WeeklyCalendarStrip 
         selectedDay={selectedDay}

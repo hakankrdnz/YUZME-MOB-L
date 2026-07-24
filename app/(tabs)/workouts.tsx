@@ -8,7 +8,7 @@ import { INITIAL_WORKOUTS } from '../../services/workoutService';
 import { Workout } from '../../types/swimming';
 import { Ionicons, MaterialCommunityIcons } from '@expo/vector-icons';
 
-type FilterCategory = 'Tümü' | '25m Havuz' | '50m Havuz' | 'Açık Su' | 'Başlangıç' | 'İleri';
+type FilterCategory = 'Tümü' | '50m Havuz' | 'Açık Su' | 'Başlangıç' | 'İleri';
 
 export default function TrainingScreen() {
   const router = useRouter();
@@ -16,17 +16,17 @@ export default function TrainingScreen() {
   const [activeFilter, setActiveFilter] = useState<FilterCategory>('Tümü');
   const [exportWorkout, setExportWorkout] = useState<Workout | null>(null);
 
-  const filters: FilterCategory[] = ['Tümü', '25m Havuz', '50m Havuz', 'Açık Su', 'Başlangıç', 'İleri'];
+  const filters: FilterCategory[] = ['Tümü', '50m Havuz', 'Açık Su', 'Başlangıç', 'İleri'];
 
   const filteredWorkouts = INITIAL_WORKOUTS.filter(w => {
     if (activeFilter === 'Tümü') return true;
-    if (activeFilter === '25m Havuz') return w.poolLength === 25;
     if (activeFilter === '50m Havuz') return w.poolLength === 50;
     if (activeFilter === 'Açık Su') return w.title.toLowerCase().includes('marathon') || w.title.toLowerCase().includes('swimathon');
     if (activeFilter === 'Başlangıç') return (w.level as string) === 'Başlangıç' || (w.level as string) === 'Intermediate Level';
     if (activeFilter === 'İleri') return (w.level as string) === 'İleri' || (w.level as string) === 'Advanced Level';
     return true;
   });
+
 
 
   const handleSelectWorkout = (workout: Workout) => {
