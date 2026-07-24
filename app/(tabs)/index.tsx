@@ -24,7 +24,8 @@ interface WeeklyWorkoutItem {
 export default function HomeScreen() {
   const router = useRouter();
   const [selectedDay, setSelectedDay] = useState<number>(23);
-  const [activePoolType, setActivePoolType] = useState<'25m' | '50m' | 'OpenWater'>('25m');
+  const [activePoolType, setActivePoolType] = useState<'25m' | '50m' | 'OpenWater'>('50m');
+
   const [exportWorkout, setExportWorkout] = useState<Workout | null>(null);
 
   // Dynamic ISO week helper

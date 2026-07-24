@@ -12,7 +12,8 @@ export default function BuilderScreen() {
   const insets = useSafeAreaInsets();
   const [title, setTitle] = useState('');
   const [description, setDescription] = useState('');
-  const [poolLength, setPoolLength] = useState<25 | 50>(25);
+  const [poolLength, setPoolLength] = useState<25 | 50>(50);
+
   const [sets, setSets] = useState<WorkoutSet[]>([
     {
       id: 'set-1',

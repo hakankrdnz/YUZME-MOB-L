@@ -98,10 +98,11 @@ export const generateWorkoutHTML = (workout: Workout): string => {
       </head>
       <body>
         <div class="card-header">
-          <div class="subtitle">OPEN WATER DRAGOS • HAVUZ KART</div>
+          <div class="subtitle">OPEN WATER SWIMMER • HAVUZ KART (50M OLİMPİK)</div>
           <h1 class="title">${workout.title}</h1>
           <p style="color: #94A3B8; margin: 4px 0 0 0; font-size: 13px;">${workout.description}</p>
         </div>
+
 
         <div class="meta-grid">
           <div class="meta-item">

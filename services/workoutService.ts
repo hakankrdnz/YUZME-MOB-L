@@ -31,10 +31,11 @@ export const REAL_SWIM_WORKOUTS: Record<string, DetailedWorkoutPlan> = {
     id: 'w-interval',
     title: 'Interval Training',
     level: 'Advanced Level',
-    poolLength: 25,
+    poolLength: 50,
     totalDistance: 2700,
     estimatedTimeMin: 45,
-    description: 'IRONMAN & 70.3 triatlon yüzücüleri için yüksek tempolu interval antrenmanı.',
+    description: 'Açık su yüzücüleri (Open Water Swimmers) için yüksek tempolu interval antrenmanı.',
+
     sets: [
       { id: 'w1', category: 'Warmup', reps: 1, distance: 600, stroke: '50m free + 50m any other stroke', intensityPercent: 40, restTimeFormatted: '0:45' },
       { id: 'w2', category: 'Warmup', reps: 1, distance: 200, stroke: 'Kick with fins', intensityPercent: 40, restTimeFormatted: '0:30' },
@@ -53,10 +54,11 @@ export const REAL_SWIM_WORKOUTS: Record<string, DetailedWorkoutPlan> = {
     id: 'w-longdistance',
     title: 'Long Distance',
     level: 'Intermediate Level',
-    poolLength: 25,
+    poolLength: 50,
     totalDistance: 3000,
     estimatedTimeMin: 55,
     description: 'Açık su enerjisini yönetmeyi ve 2. yarıda negatif split yüzmeyi öğreten dayanıklılık antrenmanı.',
+
     sets: [
       { id: 'w1', category: 'Warmup', reps: 1, distance: 200, stroke: 'Easy swim', intensityPercent: 40, restTimeFormatted: '0:30' },
       { id: 'w2', category: 'Warmup', reps: 1, distance: 100, stroke: 'Kick with a board', intensityPercent: 40, restTimeFormatted: '0:30' },
