@@ -26,43 +26,38 @@ export interface DetailedWorkoutPlan {
 }
 
 export const REAL_SWIM_WORKOUTS: Record<string, DetailedWorkoutPlan> = {
-  // 1. Interval Training (2700m)
+  // 1. Interval Training (2300m)
   'Interval Training': {
     id: 'w-interval',
     title: 'Interval Training',
     level: 'Advanced Level',
     poolLength: 50,
-    totalDistance: 2700,
+    totalDistance: 2300,
     estimatedTimeMin: 45,
     description: 'Açık su yüzücüleri (Open Water Swimmers) için yüksek tempolu interval antrenmanı.',
-
     sets: [
-      { id: 'w1', category: 'Warmup', reps: 1, distance: 600, stroke: '50m free + 50m any other stroke', intensityPercent: 40, restTimeFormatted: '0:45' },
-      { id: 'w2', category: 'Warmup', reps: 1, distance: 200, stroke: 'Kick with fins', intensityPercent: 40, restTimeFormatted: '0:30' },
+      { id: 'w1', category: 'Warmup', reps: 1, distance: 200, stroke: '50m free + 50m drill', intensityPercent: 40, restTimeFormatted: '0:30' },
       { id: 'p1', category: 'Preparation', reps: 2, distance: 50, stroke: 'Fist swimming drill', intensityPercent: 60, restTimeFormatted: '0:30' },
       { id: 'p2', category: 'Preparation', reps: 2, distance: 50, stroke: 'Switch drill', intensityPercent: 60, restTimeFormatted: '0:30' },
       { id: 'p3', category: 'Preparation', reps: 4, distance: 50, stroke: 'Free progressive 1st 60% to 4th 90%', intensityPercent: 80, restTimeFormatted: '0:30' },
       { id: 'm1', category: 'Main', reps: 3, distance: 50, stroke: 'Freestyle (15m 100% + 35m easy) (4 Round)', intensityPercent: 100, restTimeFormatted: '1:00' },
       { id: 'm2', category: 'Main', reps: 1, distance: 50, stroke: 'Freestyle (25m 90% + 25m easy)', intensityPercent: 90, restTimeFormatted: '0:20' },
       { id: 'm3', category: 'Main', reps: 1, distance: 100, stroke: 'Easy free recovery', intensityPercent: 40, restTimeFormatted: '1:00' },
-      { id: 'c1', category: 'Cool Down', reps: 1, distance: 300, stroke: 'Swim/kick easy with fins', intensityPercent: 40, restTimeFormatted: '0:30' },
+      { id: 'c1', category: 'Cool Down', reps: 1, distance: 200, stroke: 'Swim/kick easy with fins', intensityPercent: 40, restTimeFormatted: '0:30' },
     ]
   },
 
-  // 2. Long Distance (3000m)
+  // 2. Long Distance (2800m)
   'Long Distance': {
     id: 'w-longdistance',
     title: 'Long Distance',
     level: 'Intermediate Level',
     poolLength: 50,
-    totalDistance: 3000,
+    totalDistance: 2800,
     estimatedTimeMin: 55,
     description: 'Açık su enerjisini yönetmeyi ve 2. yarıda negatif split yüzmeyi öğreten dayanıklılık antrenmanı.',
-
     sets: [
-      { id: 'w1', category: 'Warmup', reps: 1, distance: 200, stroke: 'Easy swim', intensityPercent: 40, restTimeFormatted: '0:30' },
-      { id: 'w2', category: 'Warmup', reps: 1, distance: 100, stroke: 'Kick with a board', intensityPercent: 40, restTimeFormatted: '0:30' },
-      { id: 'w3', category: 'Warmup', reps: 1, distance: 100, stroke: 'Free with pull buoy', intensityPercent: 50, restTimeFormatted: '0:30' },
+      { id: 'w1', category: 'Warmup', reps: 1, distance: 200, stroke: 'Easy swim & kick', intensityPercent: 40, restTimeFormatted: '0:30' },
       { id: 'p1', category: 'Preparation', reps: 2, distance: 50, stroke: 'Gentle swim with fins', intensityPercent: 50, restTimeFormatted: '0:30' },
       { id: 'p2', category: 'Preparation', reps: 2, distance: 50, stroke: 'Armpit swim with fins', intensityPercent: 60, restTimeFormatted: '0:30' },
       { id: 'p3', category: 'Preparation', reps: 4, distance: 50, stroke: 'Free progressive from 60% to 90%', intensityPercent: 80, restTimeFormatted: '0:30' },
@@ -71,19 +66,17 @@ export const REAL_SWIM_WORKOUTS: Record<string, DetailedWorkoutPlan> = {
     ]
   },
 
-  // 3. Hybrid / Endurance + Hypoxic (4500m)
+  // 3. Hybrid / Endurance + Hypoxic (4100m)
   'Hybrid': {
     id: 'w-hybrid',
     title: 'Endurance + Hypoxic (Hybrid)',
     level: 'Advanced Level',
     poolLength: 50,
-
-    totalDistance: 4500,
+    totalDistance: 4100,
     estimatedTimeMin: 75,
     description: 'Akciğer kapasitesini artırma ve hipoksik nefes kontrolü odaklı ileri seviye antrenman.',
     sets: [
-      { id: 'w1', category: 'Warmup', reps: 1, distance: 300, stroke: 'Swim any stroke', intensityPercent: 40, restTimeFormatted: '0:30' },
-      { id: 'w2', category: 'Warmup', reps: 1, distance: 300, stroke: 'Kick with fins', intensityPercent: 40, restTimeFormatted: '0:30' },
+      { id: 'w1', category: 'Warmup', reps: 1, distance: 200, stroke: 'Swim easy choice', intensityPercent: 40, restTimeFormatted: '0:30' },
       { id: 'p1', category: 'Preparation', reps: 1, distance: 100, stroke: 'Catch up drill', intensityPercent: 60, restTimeFormatted: '0:30' },
       { id: 'p2', category: 'Preparation', reps: 1, distance: 100, stroke: 'Gentle swim', intensityPercent: 50, restTimeFormatted: '0:30' },
       { id: 'p3', category: 'Preparation', reps: 1, distance: 100, stroke: 'Shake drill', intensityPercent: 60, restTimeFormatted: '0:30' },
@@ -95,20 +88,17 @@ export const REAL_SWIM_WORKOUTS: Record<string, DetailedWorkoutPlan> = {
     ]
   },
 
-  // 4. Long Speed (2900m)
+  // 4. Long Speed (2500m)
   'Long Speed': {
     id: 'w-longspeed',
     title: 'Long Speed',
     level: 'Advanced Level',
     poolLength: 50,
-
-    totalDistance: 2900,
+    totalDistance: 2500,
     estimatedTimeMin: 50,
     description: 'Uzun kulacın temposunu ve yüksek sürati koruma antrenmanı.',
     sets: [
-      { id: 'w1', category: 'Warmup', reps: 1, distance: 400, stroke: 'Swim any stroke', intensityPercent: 40, restTimeFormatted: '0:30' },
-      { id: 'w2', category: 'Warmup', reps: 1, distance: 100, stroke: 'Kick', intensityPercent: 40, restTimeFormatted: '0:30' },
-      { id: 'w3', category: 'Warmup', reps: 1, distance: 100, stroke: 'Pull buoy', intensityPercent: 50, restTimeFormatted: '0:30' },
+      { id: 'w1', category: 'Warmup', reps: 1, distance: 200, stroke: 'Swim easy choice', intensityPercent: 40, restTimeFormatted: '0:30' },
       { id: 'p1', category: 'Preparation', reps: 4, distance: 50, stroke: 'Single arm drill', intensityPercent: 60, restTimeFormatted: '0:30' },
       { id: 'p2', category: 'Preparation', reps: 4, distance: 50, stroke: 'Fist swimming', intensityPercent: 60, restTimeFormatted: '0:30' },
       { id: 'p3', category: 'Preparation', reps: 4, distance: 50, stroke: 'Free with pull buoy breathe every 5', intensityPercent: 70, restTimeFormatted: '0:30' },
@@ -119,19 +109,17 @@ export const REAL_SWIM_WORKOUTS: Record<string, DetailedWorkoutPlan> = {
     ]
   },
 
-  // 5. Lung Capacity & Speed (3200m)
+  // 5. Lung Capacity & Speed (2800m)
   'Pure Speed': {
     id: 'w-lungcapacity',
     title: 'Lung Capacity & Speed',
     level: 'Intermediate Level',
     poolLength: 50,
-
-    totalDistance: 3200,
+    totalDistance: 2800,
     estimatedTimeMin: 55,
     description: 'Her nefeste daha fazla oksijen alma ve akciğer kapasitesini geliştirme programı.',
     sets: [
-      { id: 'w1', category: 'Warmup', reps: 1, distance: 500, stroke: 'Swim any stroke', intensityPercent: 40, restTimeFormatted: '0:45' },
-      { id: 'w2', category: 'Warmup', reps: 1, distance: 100, stroke: 'Kick with a board', intensityPercent: 40, restTimeFormatted: '0:30' },
+      { id: 'w1', category: 'Warmup', reps: 1, distance: 200, stroke: 'Swim any stroke', intensityPercent: 40, restTimeFormatted: '0:30' },
       { id: 'p1', category: 'Preparation', reps: 2, distance: 50, stroke: '25m front scull + 25m free', intensityPercent: 60, restTimeFormatted: '0:30' },
       { id: 'p2', category: 'Preparation', reps: 2, distance: 50, stroke: 'Single arm drill', intensityPercent: 60, restTimeFormatted: '0:30' },
       { id: 'p3', category: 'Preparation', reps: 2, distance: 50, stroke: 'Free breathing every 5 strokes', intensityPercent: 60, restTimeFormatted: '0:30' },
@@ -139,7 +127,7 @@ export const REAL_SWIM_WORKOUTS: Record<string, DetailedWorkoutPlan> = {
       { id: 'm1', category: 'Main', reps: 16, distance: 50, stroke: 'Free (no breath last 15m)', intensityPercent: 80, restTimeFormatted: '0:20' },
       { id: 'm2', category: 'Main', reps: 1, distance: 100, stroke: 'Easy swim or kick', intensityPercent: 40, restTimeFormatted: '1:00' },
       { id: 'm3', category: 'Main', reps: 5, distance: 200, stroke: 'Free breathe every 3 or 5 stroke 60%', intensityPercent: 60, restTimeFormatted: '0:30' },
-      { id: 'c1', category: 'Cool Down', reps: 1, distance: 300, stroke: 'Free with snorkel', intensityPercent: 40, restTimeFormatted: '0:30' },
+      { id: 'c1', category: 'Cool Down', reps: 1, distance: 200, stroke: 'Free with snorkel', intensityPercent: 40, restTimeFormatted: '0:30' },
     ]
   },
 
@@ -149,7 +137,6 @@ export const REAL_SWIM_WORKOUTS: Record<string, DetailedWorkoutPlan> = {
     title: 'Swimathon 2.5k (Pace Practice)',
     level: 'Intermediate Level',
     poolLength: 50,
-
     totalDistance: 2400,
     estimatedTimeMin: 45,
     description: 'Official Swimathon 2.5k 10-haftalık planın 8x100m sabit tempo ve kademeli ritim kontrolü antrenmanı.',
@@ -168,7 +155,6 @@ export const REAL_SWIM_WORKOUTS: Record<string, DetailedWorkoutPlan> = {
     title: 'Swimathon Endurance (4x400m)',
     level: 'Intermediate Level',
     poolLength: 50,
-
     totalDistance: 2300,
     estimatedTimeMin: 42,
     description: 'Official Swimathon 4×400m sürdürülebilir tempo ve 4×25m depar hızlı bitiriş dayanıklılık seti.',
@@ -186,15 +172,11 @@ export const REAL_SWIM_WORKOUTS: Record<string, DetailedWorkoutPlan> = {
     title: 'Marathon Swims W1S1 (Steady Intro)',
     level: 'Intermediate Level',
     poolLength: 50,
-
-    totalDistance: 2400,
+    totalDistance: 2300,
     estimatedTimeMin: 45,
     description: 'Swim for Tri (SFT) 5-Haftalık 5km Marathon Swims rehberinin 1. Hafta 1. Seansı (Pyramid 50m to 400m).',
     sets: [
-      { id: 'w1', category: 'Warmup', reps: 1, distance: 100, stroke: 'FC easy full stroke', intensityPercent: 40, restTimeFormatted: '0:30' },
-      { id: 'w2', category: 'Warmup', reps: 1, distance: 100, stroke: 'FC arms only with pull buoy', intensityPercent: 50, restTimeFormatted: '0:30' },
-      { id: 'w3', category: 'Warmup', reps: 1, distance: 50, stroke: 'FC fist drill opening & closing fists', intensityPercent: 60, restTimeFormatted: '0:30' },
-      { id: 'w4', category: 'Warmup', reps: 1, distance: 50, stroke: 'Choice swim', intensityPercent: 40, restTimeFormatted: '0:30' },
+      { id: 'w1', category: 'Warmup', reps: 1, distance: 200, stroke: 'FC easy full stroke & pull', intensityPercent: 40, restTimeFormatted: '0:30' },
       { id: 'p1', category: 'Preparation', reps: 4, distance: 25, stroke: '4 strokes fists + 4 strokes normal fast arms into easy', intensityPercent: 80, restTimeFormatted: '0:15' },
       { id: 'm1', category: 'Main', reps: 1, distance: 50, stroke: 'FC rest 10s', intensityPercent: 60, restTimeFormatted: '0:10' },
       { id: 'm2', category: 'Main', reps: 1, distance: 100, stroke: 'FC rest 15s', intensityPercent: 65, restTimeFormatted: '0:15' },
@@ -204,10 +186,7 @@ export const REAL_SWIM_WORKOUTS: Record<string, DetailedWorkoutPlan> = {
       { id: 'm6', category: 'Main', reps: 1, distance: 300, stroke: 'FC rest 35s', intensityPercent: 75, restTimeFormatted: '0:35' },
       { id: 'm7', category: 'Main', reps: 1, distance: 350, stroke: 'FC with paddles rest 35s', intensityPercent: 75, restTimeFormatted: '0:35' },
       { id: 'm8', category: 'Main', reps: 1, distance: 400, stroke: 'FC record time taken rest 45s', intensityPercent: 80, restTimeFormatted: '0:45' },
-      { id: 'c1', category: 'Cool Down', reps: 1, distance: 50, stroke: 'With fins, paddles and snorkel', intensityPercent: 40, restTimeFormatted: '0:30' },
-      { id: 'c2', category: 'Cool Down', reps: 1, distance: 50, stroke: 'With fins and snorkel', intensityPercent: 40, restTimeFormatted: '0:30' },
-      { id: 'c3', category: 'Cool Down', reps: 1, distance: 50, stroke: 'With snorkel only', intensityPercent: 40, restTimeFormatted: '0:30' },
-      { id: 'c4', category: 'Cool Down', reps: 1, distance: 50, stroke: 'No swim aids easy', intensityPercent: 40, restTimeFormatted: '0:30' },
+      { id: 'c1', category: 'Cool Down', reps: 1, distance: 200, stroke: 'With fins & snorkel easy swim down', intensityPercent: 40, restTimeFormatted: '0:30' },
     ]
   },
 
@@ -216,18 +195,17 @@ export const REAL_SWIM_WORKOUTS: Record<string, DetailedWorkoutPlan> = {
     title: 'Marathon Swims W1S2 (Faster Efforts 4x100s)',
     level: 'Advanced Level',
     poolLength: 50,
-
-    totalDistance: 2200,
+    totalDistance: 2100,
     estimatedTimeMin: 40,
     description: 'SFT Marathon Swims 16x100m Best Average sürat ve ritim dayanıklılık antrenmanı.',
     sets: [
-      { id: 'w1', category: 'Warmup', reps: 1, distance: 300, stroke: 'Standard SFT Warmup (100 free + 100 pull + 50 fist + 50 choice)', intensityPercent: 40, restTimeFormatted: '0:30' },
+      { id: 'w1', category: 'Warmup', reps: 1, distance: 200, stroke: 'Standard SFT Warmup', intensityPercent: 40, restTimeFormatted: '0:30' },
       { id: 'p1', category: 'Preparation', reps: 4, distance: 25, stroke: 'SFT Subset fast arms to get heart rate up', intensityPercent: 80, restTimeFormatted: '0:15' },
       { id: 'm1', category: 'Main', reps: 4, distance: 100, stroke: '4x100m FC Best Average, rest 10s between each', intensityPercent: 85, restTimeFormatted: '0:10' },
       { id: 'm2', category: 'Main', reps: 4, distance: 100, stroke: '4x100m FC Best Average (faster), rest 15s', intensityPercent: 88, restTimeFormatted: '0:15' },
       { id: 'm3', category: 'Main', reps: 4, distance: 100, stroke: '4x100m FC Best Average (quicker), rest 20s', intensityPercent: 90, restTimeFormatted: '0:20' },
       { id: 'm4', category: 'Main', reps: 4, distance: 100, stroke: '4x100m FC Best Average (fastest round!), rest 30s', intensityPercent: 95, restTimeFormatted: '0:30' },
-      { id: 'c1', category: 'Cool Down', reps: 1, distance: 200, stroke: 'SFT Swim Down (fins, paddles, snorkel progression)', intensityPercent: 40, restTimeFormatted: '0:30' },
+      { id: 'c1', category: 'Cool Down', reps: 1, distance: 200, stroke: 'SFT Swim Down', intensityPercent: 40, restTimeFormatted: '0:30' },
     ]
   },
 
@@ -236,12 +214,11 @@ export const REAL_SWIM_WORKOUTS: Record<string, DetailedWorkoutPlan> = {
     title: 'Marathon Swims W2S1 (Breathing Patterns)',
     level: 'Intermediate Level',
     poolLength: 50,
-
-    totalDistance: 2100,
+    totalDistance: 2000,
     estimatedTimeMin: 38,
     description: 'SFT Marathon Swims BP5 ➔ BP4 ➔ BP3 ➔ Snorkel nefes hipoksik dayanıklılık antrenmanı.',
     sets: [
-      { id: 'w1', category: 'Warmup', reps: 1, distance: 300, stroke: 'SFT Warmup', intensityPercent: 40, restTimeFormatted: '0:30' },
+      { id: 'w1', category: 'Warmup', reps: 1, distance: 200, stroke: 'SFT Warmup', intensityPercent: 40, restTimeFormatted: '0:30' },
       { id: 'p1', category: 'Preparation', reps: 4, distance: 25, stroke: 'SFT Subset fast arms', intensityPercent: 80, restTimeFormatted: '0:15' },
       { id: 'm1', category: 'Main', reps: 1, distance: 500, stroke: '500m FC BP 5 (breathe every 5th stroke) rest 20s', intensityPercent: 70, restTimeFormatted: '0:20' },
       { id: 'm2', category: 'Main', reps: 1, distance: 400, stroke: '400m FC BP 4 (with pull buoy, switch breathing sides) rest 20s', intensityPercent: 70, restTimeFormatted: '0:20' },
@@ -257,12 +234,11 @@ export const REAL_SWIM_WORKOUTS: Record<string, DetailedWorkoutPlan> = {
     title: 'Marathon Swims W3S1 (Pacing 4x500m)',
     level: 'Advanced Level',
     poolLength: 50,
-
-    totalDistance: 2600,
+    totalDistance: 2500,
     estimatedTimeMin: 45,
     description: 'SFT 4 adet 500m blok (50m, 100m, 150m yarış temposu + 200m aktif dinlenme) maraton seti.',
     sets: [
-      { id: 'w1', category: 'Warmup', reps: 1, distance: 300, stroke: 'SFT Warmup', intensityPercent: 40, restTimeFormatted: '0:30' },
+      { id: 'w1', category: 'Warmup', reps: 1, distance: 200, stroke: 'SFT Warmup', intensityPercent: 40, restTimeFormatted: '0:30' },
       { id: 'p1', category: 'Preparation', reps: 4, distance: 25, stroke: 'SFT Subset fast arms', intensityPercent: 80, restTimeFormatted: '0:15' },
       { id: 'm1', category: 'Main', reps: 4, distance: 50, stroke: '50m aim race target pace rest 10s (4 Rounds)', intensityPercent: 85, restTimeFormatted: '0:10' },
       { id: 'm2', category: 'Main', reps: 4, distance: 100, stroke: '100m aim race target pace rest 20s (4 Rounds)', intensityPercent: 85, restTimeFormatted: '0:20' },
@@ -277,12 +253,11 @@ export const REAL_SWIM_WORKOUTS: Record<string, DetailedWorkoutPlan> = {
     title: 'Marathon Swims W3S2 (21x100m Autopilot)',
     level: 'Advanced Level',
     poolLength: 50,
-
-    totalDistance: 2700,
+    totalDistance: 2600,
     estimatedTimeMin: 48,
     description: 'SFT 21 adet 100m serbest tekrarı ile sürtünmeyi düşürüp mükemmel teknikle bitirme seti.',
     sets: [
-      { id: 'w1', category: 'Warmup', reps: 1, distance: 300, stroke: 'SFT Warmup', intensityPercent: 40, restTimeFormatted: '0:30' },
+      { id: 'w1', category: 'Warmup', reps: 1, distance: 200, stroke: 'SFT Warmup', intensityPercent: 40, restTimeFormatted: '0:30' },
       { id: 'p1', category: 'Preparation', reps: 4, distance: 25, stroke: 'SFT Subset fast arms', intensityPercent: 80, restTimeFormatted: '0:15' },
       { id: 'm1', category: 'Main', reps: 21, distance: 100, stroke: '21x100m FC steady, rest 30s, breathe every 5th on last length of each', intensityPercent: 75, restTimeFormatted: '0:30' },
       { id: 'c1', category: 'Cool Down', reps: 1, distance: 200, stroke: 'SFT Swim Down', intensityPercent: 40, restTimeFormatted: '0:30' },
@@ -294,12 +269,11 @@ export const REAL_SWIM_WORKOUTS: Record<string, DetailedWorkoutPlan> = {
     title: 'Marathon Swims W4S3 (Long Distance 7x400m)',
     level: 'Advanced Level',
     poolLength: 50,
-
-    totalDistance: 3400,
+    totalDistance: 3300,
     estimatedTimeMin: 58,
     description: 'SFT 7 adet 400m maraton seti (tekli turlarda melek, çiftlilerde palet ile güç geliştirme).',
     sets: [
-      { id: 'w1', category: 'Warmup', reps: 1, distance: 300, stroke: 'SFT Warmup', intensityPercent: 40, restTimeFormatted: '0:30' },
+      { id: 'w1', category: 'Warmup', reps: 1, distance: 200, stroke: 'SFT Warmup', intensityPercent: 40, restTimeFormatted: '0:30' },
       { id: 'p1', category: 'Preparation', reps: 4, distance: 25, stroke: 'SFT Subset fast arms', intensityPercent: 80, restTimeFormatted: '0:15' },
       { id: 'm1', category: 'Main', reps: 7, distance: 400, stroke: '7x400m FC rest 30s (build 1-4, 5-7. Odd swims pull buoy, even swims fins)', intensityPercent: 80, restTimeFormatted: '0:30' },
       { id: 'c1', category: 'Cool Down', reps: 1, distance: 200, stroke: 'SFT Swim Down', intensityPercent: 40, restTimeFormatted: '0:30' },
@@ -311,12 +285,11 @@ export const REAL_SWIM_WORKOUTS: Record<string, DetailedWorkoutPlan> = {
     title: 'Marathon Swims W5S1 (Event Prep 1600m Exit)',
     level: 'Advanced Level',
     poolLength: 50,
-
-    totalDistance: 2200,
+    totalDistance: 2100,
     estimatedTimeMin: 40,
     description: 'SFT 1600m Serbest tekrarında her 200m de bir havuzdan çıkıp ayakta nabız düşürme simülasyon seti.',
     sets: [
-      { id: 'w1', category: 'Warmup', reps: 1, distance: 300, stroke: 'SFT Warmup', intensityPercent: 40, restTimeFormatted: '0:30' },
+      { id: 'w1', category: 'Warmup', reps: 1, distance: 200, stroke: 'SFT Warmup', intensityPercent: 40, restTimeFormatted: '0:30' },
       { id: 'p1', category: 'Preparation', reps: 4, distance: 25, stroke: 'SFT Subset fast arms', intensityPercent: 80, restTimeFormatted: '0:15' },
       { id: 'm1', category: 'Main', reps: 8, distance: 200, stroke: '1600m FC, safely exit pool every 200m, stand up, reduce HR, return with great technique', intensityPercent: 75, restTimeFormatted: '0:45' },
       { id: 'c1', category: 'Cool Down', reps: 1, distance: 200, stroke: 'SFT Swim Down', intensityPercent: 40, restTimeFormatted: '0:30' },
@@ -328,18 +301,18 @@ export const REAL_SWIM_WORKOUTS: Record<string, DetailedWorkoutPlan> = {
     title: 'Marathon Swims 5km Race Day Event',
     level: 'Advanced Level',
     poolLength: 50,
-
-    totalDistance: 5600,
+    totalDistance: 5500,
     estimatedTimeMin: 90,
-    description: '5km Açık Su / Maraton Yüzme Yarış Günü (5000m Yarış + 600m Isınma/Soğuma).',
+    description: '5km Açık Su / Maraton Yüzme Yarış Günü (5000m Yarış + 300m Isınma/Soğuma).',
     sets: [
-      { id: 'w1', category: 'Warmup', reps: 1, distance: 300, stroke: 'SFT Race Warmup', intensityPercent: 40, restTimeFormatted: '0:30' },
+      { id: 'w1', category: 'Warmup', reps: 1, distance: 200, stroke: 'SFT Race Warmup', intensityPercent: 40, restTimeFormatted: '0:30' },
       { id: 'p1', category: 'Preparation', reps: 4, distance: 25, stroke: 'SFT Subset fast arms', intensityPercent: 80, restTimeFormatted: '0:15' },
       { id: 'm1', category: 'Main', reps: 1, distance: 5000, stroke: '5000m MARATHON SWIM EVENT! Maintain even pace, 50 strokes or less per 50m', intensityPercent: 85, restTimeFormatted: '0:00' },
       { id: 'c1', category: 'Cool Down', reps: 1, distance: 200, stroke: 'SFT Easy Swim Down', intensityPercent: 40, restTimeFormatted: '0:30' },
     ]
   }
 };
+
 
 export const INITIAL_WORKOUTS: Workout[] = Object.values(REAL_SWIM_WORKOUTS).map(p => ({
   id: p.id,
