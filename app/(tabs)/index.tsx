@@ -137,7 +137,8 @@ export default function HomeScreen() {
               activeOpacity={0.85}
             >
               <Ionicons name="play" size={16} color="#070C16" />
-              <Text style={styles.heroStartBtnText}>CANLI MODDA BAŞLAT</Text>
+              <Text style={styles.heroStartBtnText}>ANTRENMANI BAŞLAT</Text>
+
             </TouchableOpacity>
           </View>
         </View>

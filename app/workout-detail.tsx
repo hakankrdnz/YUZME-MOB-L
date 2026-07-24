@@ -74,7 +74,8 @@ export default function WorkoutDetailScreen() {
       completedAt: new Date().toISOString(),
       durationMinutes: matchedPlan.estimatedTimeMin,
       totalDistance: matchedPlan.totalDistance,
-      notes: 'Canlı modda tamamlandı.'
+      notes: 'Antrenman tamamlandı.'
+
     });
 
     Alert.alert('Tebrikler! 🏆', `${matchedPlan.totalDistance}m antrenmanı tamamlandı ve geçmişe kaydedildi!`, [
